@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { downloadCsv, recordsToCsv } from "@/lib/csv";
+import { todayString } from "@/lib/date";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_HEIGHT, MIN_HEIGHT, parseHeight } from "@/lib/weight";
 
-/** F-19 設定：身長の登録と全データの削除 */
+/** F-19 設定：身長の登録と全データの削除。F-25 CSV 書き出し */
 export default function SettingsPage() {
   const { data, setHeight, deleteAll } = useWeightMemo();
   // null = まだ触っていない（現在の身長を初期値として表示する）
@@ -61,6 +63,21 @@ export default function SettingsPage() {
           </p>
         )}
       </form>
+
+      <section className={box}>
+        <h2 className="font-bold">CSV 書き出し</h2>
+        <p className="text-sm text-neutral-600 dark:text-neutral-300">
+          すべての記録を CSV ファイルでダウンロードします。Excel やスプレッドシートで開けます。
+        </p>
+        <button
+          type="button"
+          disabled={!data || data.records.length === 0}
+          onClick={() => data && downloadCsv(recordsToCsv(data.records), `weight-memo-${todayString()}.csv`)}
+          className="w-full rounded-md border border-emerald-600 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-50 disabled:opacity-50 dark:text-emerald-400 dark:hover:bg-emerald-950"
+        >
+          CSV をダウンロード{data ? `（${data.records.length}件）` : ""}
+        </button>
+      </section>
 
       <section className={box}>
         <h2 className="font-bold">全データの削除</h2>
