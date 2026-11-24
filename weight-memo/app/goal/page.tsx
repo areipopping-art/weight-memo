@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import BmiCard from "@/components/BmiCard";
 import CalorieTargetCard from "@/components/CalorieTargetCard";
@@ -33,7 +34,12 @@ export default function GoalPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-bold">目標設定</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-bold">目標設定</h1>
+        <Link href="/goal/achievements" className="text-sm text-emerald-700 underline dark:text-emerald-400">
+          🏆 達成記録
+        </Link>
+      </div>
 
       {hasGoal && (
         <p className="rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800">

@@ -1,5 +1,6 @@
 // F-09 自動保存：すべてのデータを localStorage に保存する
 
+import type { Achievement } from "./achievements";
 import type { Activity, Profile, Sex } from "./calorie";
 import type { Kcal, Meals } from "./meals";
 
@@ -16,6 +17,9 @@ export type Data = Profile & {
   goalWeight: number | null;
   height: number | null; // F-19 身長（cm）
   goalDeadline: string | null; // F-16 目標の期限 "2027-03-31"
+  goalSetDate: string | null; // F-26 目標を決めた日
+  goalStartWeight: number | null; // F-26 目標を決めたときの体重（記録が無ければ null）
+  achievements: Achievement[]; // F-26 達成記録（古い順）
   records: WeightRecord[];
 };
 
@@ -27,6 +31,9 @@ export const EMPTY: Data = {
   age: null,
   sex: null,
   activity: null,
+  goalSetDate: null,
+  goalStartWeight: null,
+  achievements: [],
   records: [],
 };
 
@@ -49,6 +56,10 @@ function parse(raw: string | null): Data {
       age: typeof d.age === "number" ? d.age : null,
       sex: SEXES.includes(d.sex as Sex) ? (d.sex as Sex) : null,
       activity: ACTIVITY_KEYS.includes(d.activity as Activity) ? (d.activity as Activity) : null,
+      // F-26 達成記録
+      goalSetDate: typeof d.goalSetDate === "string" ? d.goalSetDate : null,
+      goalStartWeight: typeof d.goalStartWeight === "number" ? d.goalStartWeight : null,
+      achievements: Array.isArray(d.achievements) ? d.achievements : [],
       records: Array.isArray(d.records) ? d.records : [],
     };
   } catch {
