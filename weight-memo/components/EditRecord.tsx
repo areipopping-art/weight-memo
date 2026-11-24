@@ -102,6 +102,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
           onChange={setMeals}
           kcal={kcalValue}
           onKcalChange={setKcal}
+          records={data.records}
         />
 
         {/* 食事の区分ができる前の1行メモ。ある記録だけ表示する */}

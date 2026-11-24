@@ -127,7 +127,14 @@ export default function Home() {
 
         <BodyFatField id="home-body-fat" value={bodyFat} onChange={setBodyFat} />
 
-        <MealFields idPrefix="home-meal" value={meals} onChange={setMeals} kcal={kcal} onKcalChange={setKcal} />
+        <MealFields
+          idPrefix="home-meal"
+          value={meals}
+          onChange={setMeals}
+          kcal={kcal}
+          onKcalChange={setKcal}
+          records={data.records}
+        />
 
         <button
           type="submit"

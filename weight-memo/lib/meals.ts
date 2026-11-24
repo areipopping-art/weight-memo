@@ -72,3 +72,38 @@ export function totalKcal(record: { kcal?: Partial<Kcal> }): number | null {
 export function formatKcal(n: number): string {
   return `${n.toLocaleString("ja-JP")}kcal`;
 }
+
+// F-22 よく食べるもの
+
+export type FrequentMeal = { text: string; count: number; kcal: number | null };
+
+/**
+ * 区分ごとに、過去に入力した食事を回数の多い順に返す（同じ回数なら最近食べた順）。
+ * kcal は同じ食事を最後に記録したときのカロリー。
+ */
+export function frequentMeals(
+  records: { date: string; meals?: Partial<Meals>; kcal?: Partial<Kcal> }[],
+  key: MealKey,
+  limit: number,
+): FrequentMeal[] {
+  const map = new Map<string, FrequentMeal & { lastDate: string }>();
+  for (const r of records) {
+    const text = r.meals?.[key]?.trim();
+    if (!text) continue;
+    const kcal = r.kcal?.[key] ?? null;
+    const item = map.get(text);
+    if (!item) {
+      map.set(text, { text, count: 1, kcal, lastDate: r.date });
+      continue;
+    }
+    item.count++;
+    if (r.date > item.lastDate) {
+      item.lastDate = r.date;
+      item.kcal = kcal;
+    }
+  }
+  return [...map.values()]
+    .sort((a, b) => b.count - a.count || b.lastDate.localeCompare(a.lastDate))
+    .slice(0, limit)
+    .map(({ text, count, kcal }) => ({ text, count, kcal }));
+}
