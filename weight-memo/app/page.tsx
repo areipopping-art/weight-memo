@@ -9,6 +9,7 @@ export default function Home() {
   const { data, saveRecord } = useWeightMemo();
   const [date, setDate] = useState<string | null>(null); // null = 今日
   const [weight, setWeight] = useState("");
+  const [meal, setMeal] = useState("");
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
   // data が null の間はサーバー側の表示（まだ localStorage を読んでいない）
@@ -26,8 +27,9 @@ export default function Home() {
       setMessage({ ok: false, text: `体重は ${MIN_WEIGHT}〜${MAX_WEIGHT}kg の数字で入力してください` });
       return;
     }
-    saveRecord({ date: dateValue, weight: w, meal: "" });
+    saveRecord({ date: dateValue, weight: w, meal: meal.trim() });
     setWeight("");
+    setMeal("");
     setMessage({ ok: true, text: `${formatShortDate(dateValue)} の体重 ${formatKg(w)} を保存しました` });
   }
 
@@ -65,6 +67,21 @@ export default function Home() {
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
             className="w-full rounded-md border border-neutral-300 px-3 py-2 text-2xl dark:border-neutral-600 dark:bg-neutral-900"
+          />
+        </div>
+
+        <div className="space-y-1">
+          <label htmlFor="meal" className="block text-sm font-medium">
+            食事メモ <span className="font-normal text-neutral-500">（任意）</span>
+          </label>
+          <textarea
+            id="meal"
+            rows={2}
+            maxLength={200}
+            placeholder="例：朝 パン、昼 そば、夜 鍋"
+            value={meal}
+            onChange={(e) => setMeal(e.target.value)}
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-600 dark:bg-neutral-900"
           />
         </div>
 
