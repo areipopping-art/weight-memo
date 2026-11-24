@@ -18,5 +18,11 @@ export function useWeightMemo() {
     save({ ...current, records: [...others, record] });
   }
 
-  return { data, setGoalWeight, saveRecord };
+  /** F-08 指定した日付の記録を削除 */
+  function deleteRecord(date: string) {
+    const current = getSnapshot();
+    save({ ...current, records: current.records.filter((r) => r.date !== date) });
+  }
+
+  return { data, setGoalWeight, saveRecord, deleteRecord };
 }

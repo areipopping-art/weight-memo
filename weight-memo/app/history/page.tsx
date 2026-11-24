@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate } from "@/lib/date";
 import { formatKg } from "@/lib/weight";
@@ -13,7 +14,9 @@ function weekday(date: string): string {
 }
 
 export default function HistoryPage() {
-  const { data } = useWeightMemo();
+  const { data, deleteRecord } = useWeightMemo();
+  // 「本当に削除？」を表示している記録の日付
+  const [confirming, setConfirming] = useState<string | null>(null);
 
   if (data === null) {
     return <h1 className="text-xl font-bold">記録一覧</h1>;
@@ -48,6 +51,36 @@ export default function HistoryPage() {
                 <p className="text-lg font-bold">{formatKg(r.weight)}</p>
                 {r.meal && <p className="mt-0.5 break-words text-sm text-neutral-600 dark:text-neutral-300">{r.meal}</p>}
               </div>
+              {confirming === r.date ? (
+                <div className="flex shrink-0 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setConfirming(null)}
+                    className="rounded-md border border-neutral-300 px-2 py-1 text-xs dark:border-neutral-600"
+                  >
+                    やめる
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      deleteRecord(r.date);
+                      setConfirming(null);
+                    }}
+                    className="rounded-md bg-red-600 px-2 py-1 text-xs font-bold text-white hover:bg-red-700"
+                  >
+                    本当に削除
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setConfirming(r.date)}
+                  aria-label={`${formatShortDate(r.date)} の記録を削除`}
+                  className="shrink-0 rounded-md px-2 py-1 text-xs text-neutral-500 hover:bg-neutral-100 hover:text-red-600 dark:hover:bg-neutral-700"
+                >
+                  削除
+                </button>
+              )}
             </li>
           ))}
         </ul>
