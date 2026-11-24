@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import MealList from "@/components/MealList";
+import { formatKcal, totalKcal } from "@/lib/meals";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate } from "@/lib/date";
 import { formatKg } from "@/lib/weight";
@@ -49,7 +50,12 @@ export default function HistoryPage() {
                 <span className="ml-0.5 text-xs">({weekday(r.date)})</span>
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-lg font-bold">{formatKg(r.weight)}</p>
+                <p className="text-lg font-bold">
+                  {formatKg(r.weight)}
+                  {totalKcal(r) !== null && (
+                    <span className="ml-2 text-sm font-normal text-neutral-500">合計 {formatKcal(totalKcal(r)!)}</span>
+                  )}
+                </p>
                 <MealList record={r} />
               </div>
               {confirming === r.date ? (

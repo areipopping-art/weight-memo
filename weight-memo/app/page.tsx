@@ -8,7 +8,7 @@ import PreviousDiff from "@/components/PreviousDiff";
 import Streak from "@/components/Streak";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate, todayString } from "@/lib/date";
-import { EMPTY_MEALS, trimMeals } from "@/lib/meals";
+import { EMPTY_KCAL_INPUT, EMPTY_MEALS, MAX_KCAL, formatKcal, parseKcal, totalKcal, trimMeals } from "@/lib/meals";
 import { justReachedGoal } from "@/lib/stats";
 import { MAX_WEIGHT, MIN_WEIGHT, formatKg, parseWeight } from "@/lib/weight";
 
@@ -17,6 +17,7 @@ export default function Home() {
   const [date, setDate] = useState<string | null>(null); // null = 今日
   const [weight, setWeight] = useState("");
   const [meals, setMeals] = useState(EMPTY_MEALS); // F-13
+  const [kcal, setKcal] = useState(EMPTY_KCAL_INPUT); // F-14
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const [celebrating, setCelebrating] = useState(false); // F-18
 
@@ -28,6 +29,7 @@ export default function Home() {
   const today = todayString();
   const dateValue = date ?? today;
   const todayRecord = data.records.find((r) => r.date === today);
+  const todayKcal = todayRecord ? totalKcal(todayRecord) : null; // F-14
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -36,10 +38,22 @@ export default function Home() {
       setMessage({ ok: false, text: `体重は ${MIN_WEIGHT}〜${MAX_WEIGHT}kg の数字で入力してください` });
       return;
     }
-    const { before, after } = saveRecord({ date: dateValue, weight: w, meal: "", meals: trimMeals(meals) });
+    const parsedKcal = parseKcal(kcal);
+    if (parsedKcal === null) {
+      setMessage({ ok: false, text: `カロリーは 0〜${MAX_KCAL}kcal の数字で入力してください` });
+      return;
+    }
+    const { before, after } = saveRecord({
+      date: dateValue,
+      weight: w,
+      meal: "",
+      meals: trimMeals(meals),
+      kcal: parsedKcal,
+    });
     if (justReachedGoal(before, after, data!.goalWeight)) setCelebrating(true);
     setWeight("");
     setMeals(EMPTY_MEALS);
+    setKcal(EMPTY_KCAL_INPUT);
     setMessage({ ok: true, text: `${formatShortDate(dateValue)} の体重 ${formatKg(w)} を保存しました` });
   }
 
@@ -51,6 +65,7 @@ export default function Home() {
         <p className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-300">
           <span className="font-bold">今日は記録済み ✓</span>
           <span className="ml-2 text-sm">{formatKg(todayRecord.weight)}</span>
+          {todayKcal !== null && <span className="ml-2 text-sm">・合計 {formatKcal(todayKcal)}</span>}
         </p>
       )}
 
@@ -91,7 +106,7 @@ export default function Home() {
           />
         </div>
 
-        <MealFields idPrefix="home-meal" value={meals} onChange={setMeals} />
+        <MealFields idPrefix="home-meal" value={meals} onChange={setMeals} kcal={kcal} onKcalChange={setKcal} />
 
         <button
           type="submit"

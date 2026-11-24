@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import MealFields from "@/components/MealFields";
 import { formatShortDate } from "@/lib/date";
-import { mealsOf, trimMeals, type Meals } from "@/lib/meals";
+import { MAX_KCAL, kcalInputOf, mealsOf, parseKcal, trimMeals, type KcalInput, type Meals } from "@/lib/meals";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_WEIGHT, MIN_WEIGHT, parseWeight } from "@/lib/weight";
 
@@ -17,6 +17,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
   // null = まだ触っていない（保存済みの値を初期値として表示する）
   const [weight, setWeight] = useState<string | null>(null);
   const [meals, setMeals] = useState<Meals | null>(null); // F-13
+  const [kcal, setKcal] = useState<KcalInput | null>(null); // F-14
   const [meal, setMeal] = useState<string | null>(null); // 以前の1行メモ
   const [error, setError] = useState<string | null>(null);
 
@@ -41,6 +42,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
 
   const weightValue = weight ?? record.weight.toFixed(1);
   const mealsValue = meals ?? mealsOf(record);
+  const kcalValue = kcal ?? kcalInputOf(record);
   const mealValue = meal ?? record.meal;
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -50,7 +52,12 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
       setError(`体重は ${MIN_WEIGHT}〜${MAX_WEIGHT}kg の数字で入力してください`);
       return;
     }
-    saveRecord({ date, weight: w, meal: mealValue.trim(), meals: trimMeals(mealsValue) });
+    const parsedKcal = parseKcal(kcalValue);
+    if (parsedKcal === null) {
+      setError(`カロリーは 0〜${MAX_KCAL}kcal の数字で入力してください`);
+      return;
+    }
+    saveRecord({ date, weight: w, meal: mealValue.trim(), meals: trimMeals(mealsValue), kcal: parsedKcal });
     router.push("/history");
   }
 
@@ -79,7 +86,13 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
           />
         </div>
 
-        <MealFields idPrefix="edit-meal" value={mealsValue} onChange={setMeals} />
+        <MealFields
+          idPrefix="edit-meal"
+          value={mealsValue}
+          onChange={setMeals}
+          kcal={kcalValue}
+          onKcalChange={setKcal}
+        />
 
         {/* 食事の区分ができる前の1行メモ。ある記録だけ表示する */}
         {record.meal && (
