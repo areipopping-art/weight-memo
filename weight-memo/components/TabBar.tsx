@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const tabs = [
   { href: "/", label: "ホーム", icon: "🏠" },
   { href: "/history", label: "記録一覧", icon: "📋" },
+  { href: "/stats", label: "グラフ", icon: "📈" },
   { href: "/goal", label: "目標", icon: "🎯" },
 ];
 
@@ -21,7 +22,7 @@ export function TabBarNav({ pathname }: { pathname: string | null }) {
       aria-label="メインメニュー"
       className="fixed inset-x-0 bottom-0 border-t border-black/10 bg-white/95 backdrop-blur dark:border-white/10 dark:bg-neutral-900/95"
     >
-      <ul className="mx-auto grid max-w-md grid-cols-3">
+      <ul className="mx-auto grid max-w-md grid-cols-4">
         {tabs.map((tab) => {
           const active =
             pathname !== null && (tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href));

@@ -74,3 +74,11 @@ export function goalPace(latestWeight: number, goalWeight: number, deadline: str
   const perWeekKg = Math.round(((remainingKg * 7) / daysLeft) * 100) / 100;
   return { kind: "pace", remainingKg, daysLeft, perWeekKg };
 }
+
+/** F-17 今日を含む直近 days 日間の記録（古い順） */
+export function recordsInLastDays(records: WeightRecord[], today: string, days: number): WeightRecord[] {
+  const from = addDays(today, -(days - 1));
+  return records
+    .filter((r) => r.date >= from && r.date <= today)
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
