@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import BmiCard from "@/components/BmiCard";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_WEIGHT, MIN_WEIGHT, formatKg, parseWeight } from "@/lib/weight";
 
@@ -65,6 +66,8 @@ export default function GoalPage() {
           </p>
         )}
       </form>
+
+      {data && <BmiCard data={data} />}
     </div>
   );
 }
