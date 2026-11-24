@@ -19,6 +19,7 @@ export default function Home() {
 
   const today = todayString();
   const dateValue = date ?? today;
+  const todayRecord = data.records.find((r) => r.date === today);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -36,6 +37,13 @@ export default function Home() {
   return (
     <div className="space-y-6">
       <h1 className="text-xl font-bold">今日の記録</h1>
+
+      {todayRecord && (
+        <p className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-300">
+          <span className="font-bold">今日は記録済み ✓</span>
+          <span className="ml-2 text-sm">{formatKg(todayRecord.weight)}</span>
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4 rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800">
         <div className="space-y-1">
