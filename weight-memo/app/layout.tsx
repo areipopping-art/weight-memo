@@ -13,9 +13,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="ja" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
         <header className="border-b border-black/10 bg-white dark:border-white/10 dark:bg-neutral-900">
-          <div className="mx-auto flex max-w-md items-center px-4 py-3">
+          <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
             <Link href="/" className="text-lg font-bold">
               体重・食事メモ
+            </Link>
+            <Link
+              href="/settings"
+              aria-label="設定"
+              className="rounded-md px-2 py-1 text-xl hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            >
+              <span aria-hidden>⚙</span>
             </Link>
           </div>
         </header>

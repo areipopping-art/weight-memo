@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { getServerSnapshot, getSnapshot, save, subscribe, type WeightRecord } from "./storage";
+import { EMPTY, getServerSnapshot, getSnapshot, save, subscribe, type WeightRecord } from "./storage";
 
 export function useWeightMemo() {
   // data が null の間は「まだ読み込んでいない」（サーバー側の表示）
@@ -26,5 +26,15 @@ export function useWeightMemo() {
     save({ ...current, records: current.records.filter((r) => r.date !== date) });
   }
 
-  return { data, setGoalWeight, saveRecord, deleteRecord };
+  /** F-19 身長（cm）を保存 */
+  function setHeight(height: number) {
+    save({ ...getSnapshot(), height });
+  }
+
+  /** F-19 全データを削除 */
+  function deleteAll() {
+    save(EMPTY);
+  }
+
+  return { data, setGoalWeight, saveRecord, deleteRecord, setHeight, deleteAll };
 }

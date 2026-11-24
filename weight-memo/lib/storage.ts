@@ -8,11 +8,12 @@ export type WeightRecord = {
 
 export type Data = {
   goalWeight: number | null;
+  height: number | null; // F-19 身長（cm）
   records: WeightRecord[];
 };
 
 const KEY = "weight-memo";
-const EMPTY: Data = { goalWeight: null, records: [] };
+export const EMPTY: Data = { goalWeight: null, height: null, records: [] };
 
 const listeners = new Set<() => void>();
 let cachedRaw: string | null | undefined;
@@ -24,6 +25,7 @@ function parse(raw: string | null): Data {
     const d = JSON.parse(raw) as Partial<Data>;
     return {
       goalWeight: typeof d.goalWeight === "number" ? d.goalWeight : null,
+      height: typeof d.height === "number" ? d.height : null,
       records: Array.isArray(d.records) ? d.records : [],
     };
   } catch {
