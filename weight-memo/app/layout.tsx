@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { M_PLUS_Rounded_1c } from "next/font/google";
 import Link from "next/link";
 import { Suspense } from "react";
+import Mascot from "@/components/Mascot";
 import TabBar, { TabBarNav } from "@/components/TabBar";
 import "./globals.css";
 
@@ -24,7 +25,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <header className="border-b border-black/10 bg-white dark:border-white/10 dark:bg-neutral-900">
           <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
-            <Link href="/" className="text-lg font-bold">
+            <Link href="/" className="flex items-center gap-1.5 text-lg font-extrabold text-sakura-700 dark:text-sakura-300">
+              <Mascot mood="happy" size={34} />
               体重・食事メモ
             </Link>
             <Link
