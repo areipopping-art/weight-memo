@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import BmiCard from "@/components/BmiCard";
+import DeadlineSection from "@/components/DeadlineSection";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_WEIGHT, MIN_WEIGHT, formatKg, parseWeight } from "@/lib/weight";
 
 export default function GoalPage() {
-  const { data, setGoalWeight } = useWeightMemo();
+  const { data, setGoalWeight, setGoalDeadline } = useWeightMemo();
   // null = まだ触っていない（現在の目標を初期値として表示する）
   const [input, setInput] = useState<string | null>(null);
   const hasGoal = data?.goalWeight != null;
@@ -67,6 +68,7 @@ export default function GoalPage() {
         )}
       </form>
 
+      {data && <DeadlineSection data={data} onSave={setGoalDeadline} />}
       {data && <BmiCard data={data} />}
     </div>
   );

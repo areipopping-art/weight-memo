@@ -31,10 +31,15 @@ export function useWeightMemo() {
     save({ ...getSnapshot(), height });
   }
 
+  /** F-16 目標の期限を保存（null で解除） */
+  function setGoalDeadline(goalDeadline: string | null) {
+    save({ ...getSnapshot(), goalDeadline });
+  }
+
   /** F-19 全データを削除 */
   function deleteAll() {
     save(EMPTY);
   }
 
-  return { data, setGoalWeight, saveRecord, deleteRecord, setHeight, deleteAll };
+  return { data, setGoalWeight, saveRecord, deleteRecord, setHeight, deleteAll, setGoalDeadline };
 }

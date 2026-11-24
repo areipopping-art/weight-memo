@@ -1,4 +1,4 @@
-import { addDays } from "./date";
+import { addDays, daysBetween } from "./date";
 import type { WeightRecord } from "./storage";
 
 /** 新しい順に並べた記録 */
@@ -58,4 +58,19 @@ export function bmiCategory(bmi: number): string {
   if (bmi < 35) return "肥満（2度）";
   if (bmi < 40) return "肥満（3度）";
   return "肥満（4度）";
+}
+
+export type GoalPace =
+  | { kind: "achieved" }
+  | { kind: "overdue"; remainingKg: number }
+  | { kind: "pace"; remainingKg: number; daysLeft: number; perWeekKg: number };
+
+/** F-16 期限までに目標へ届くための「1週間あたり ◯kg」の目安 */
+export function goalPace(latestWeight: number, goalWeight: number, deadline: string, today: string): GoalPace {
+  const remainingKg = Math.round((latestWeight - goalWeight) * 10) / 10;
+  if (remainingKg <= 0) return { kind: "achieved" };
+  const daysLeft = daysBetween(today, deadline);
+  if (daysLeft <= 0) return { kind: "overdue", remainingKg };
+  const perWeekKg = Math.round(((remainingKg * 7) / daysLeft) * 100) / 100;
+  return { kind: "pace", remainingKg, daysLeft, perWeekKg };
 }

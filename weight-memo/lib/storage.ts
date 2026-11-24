@@ -9,11 +9,12 @@ export type WeightRecord = {
 export type Data = {
   goalWeight: number | null;
   height: number | null; // F-19 身長（cm）
+  goalDeadline: string | null; // F-16 目標の期限 "2027-03-31"
   records: WeightRecord[];
 };
 
 const KEY = "weight-memo";
-export const EMPTY: Data = { goalWeight: null, height: null, records: [] };
+export const EMPTY: Data = { goalWeight: null, height: null, goalDeadline: null, records: [] };
 
 const listeners = new Set<() => void>();
 let cachedRaw: string | null | undefined;
@@ -26,6 +27,7 @@ function parse(raw: string | null): Data {
     return {
       goalWeight: typeof d.goalWeight === "number" ? d.goalWeight : null,
       height: typeof d.height === "number" ? d.height : null,
+      goalDeadline: typeof d.goalDeadline === "string" ? d.goalDeadline : null,
       records: Array.isArray(d.records) ? d.records : [],
     };
   } catch {
