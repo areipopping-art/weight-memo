@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import MealWeightChart from "@/components/MealWeightChart";
+import MealWeightTable from "@/components/MealWeightTable";
 import WeightChart from "@/components/WeightChart";
 import { todayString } from "@/lib/date";
 import { recordsInLastDays } from "@/lib/stats";
@@ -11,7 +13,7 @@ const RANGES = [
   { key: "month", label: "月", days: 30 },
 ] as const;
 
-/** F-17 体重グラフ（目標ライン付き、週・月の切り替え） */
+/** F-17 体重グラフ（目標ライン付き、週・月の切り替え）、F-24 食事と体重の振り返り */
 export default function StatsPage() {
   const { data } = useWeightMemo();
   const [range, setRange] = useState<(typeof RANGES)[number]["key"]>("week");
@@ -51,6 +53,18 @@ export default function StatsPage() {
           <WeightChart records={records} goalWeight={data.goalWeight} />
         )}
       </section>
+
+      {/* F-24 食事と体重の振り返り */}
+      {records.length > 0 && (
+        <section className="rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800">
+          <h2 className="font-bold">食事と体重の振り返り</h2>
+          <p className="mb-3 text-xs text-neutral-500">食べた量（合計カロリー）と体重の動きを見比べられます。</p>
+          <MealWeightChart records={records} />
+          <div className="mt-4">
+            <MealWeightTable records={records} />
+          </div>
+        </section>
+      )}
     </div>
   );
 }
