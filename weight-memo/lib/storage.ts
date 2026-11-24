@@ -1,5 +1,6 @@
 // F-09 自動保存：すべてのデータを localStorage に保存する
 
+import type { Activity, Profile, Sex } from "./calorie";
 import type { Kcal, Meals } from "./meals";
 
 export type WeightRecord = {
@@ -11,7 +12,7 @@ export type WeightRecord = {
   bodyFat?: number | null; // F-21 体脂肪率（%、未入力は null）
 };
 
-export type Data = {
+export type Data = Profile & {
   goalWeight: number | null;
   height: number | null; // F-19 身長（cm）
   goalDeadline: string | null; // F-16 目標の期限 "2027-03-31"
@@ -19,7 +20,18 @@ export type Data = {
 };
 
 const KEY = "weight-memo";
-export const EMPTY: Data = { goalWeight: null, height: null, goalDeadline: null, records: [] };
+export const EMPTY: Data = {
+  goalWeight: null,
+  height: null,
+  goalDeadline: null,
+  age: null,
+  sex: null,
+  activity: null,
+  records: [],
+};
+
+const SEXES: Sex[] = ["male", "female"];
+const ACTIVITY_KEYS: Activity[] = ["low", "normal", "high"];
 
 const listeners = new Set<() => void>();
 let cachedRaw: string | null | undefined;
@@ -33,6 +45,10 @@ function parse(raw: string | null): Data {
       goalWeight: typeof d.goalWeight === "number" ? d.goalWeight : null,
       height: typeof d.height === "number" ? d.height : null,
       goalDeadline: typeof d.goalDeadline === "string" ? d.goalDeadline : null,
+      // F-20 カロリー計算用
+      age: typeof d.age === "number" ? d.age : null,
+      sex: SEXES.includes(d.sex as Sex) ? (d.sex as Sex) : null,
+      activity: ACTIVITY_KEYS.includes(d.activity as Activity) ? (d.activity as Activity) : null,
       records: Array.isArray(d.records) ? d.records : [],
     };
   } catch {

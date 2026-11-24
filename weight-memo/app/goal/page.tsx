@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import BmiCard from "@/components/BmiCard";
+import CalorieTargetCard from "@/components/CalorieTargetCard";
 import DeadlineSection from "@/components/DeadlineSection";
+import { todayString } from "@/lib/date";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_WEIGHT, MIN_WEIGHT, formatKg, parseWeight } from "@/lib/weight";
 
@@ -70,6 +72,7 @@ export default function GoalPage() {
 
       {data && <DeadlineSection data={data} onSave={setGoalDeadline} />}
       {data && <BmiCard data={data} />}
+      {data && <CalorieTargetCard data={data} today={todayString()} />}
     </div>
   );
 }

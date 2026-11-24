@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import ProfileForm from "@/components/ProfileForm";
 import { downloadCsv, recordsToCsv } from "@/lib/csv";
 import { todayString } from "@/lib/date";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_HEIGHT, MIN_HEIGHT, parseHeight } from "@/lib/weight";
 
-/** F-19 設定：身長の登録と全データの削除。F-25 CSV 書き出し */
+/** F-19 設定：身長の登録と全データの削除。F-20 カロリー計算用の情報。F-25 CSV 書き出し */
 export default function SettingsPage() {
-  const { data, setHeight, deleteAll } = useWeightMemo();
+  const { data, setHeight, deleteAll, setProfile } = useWeightMemo();
   // null = まだ触っていない（現在の身長を初期値として表示する）
   const [input, setInput] = useState<string | null>(null);
   const value = input ?? (data?.height != null ? data.height.toFixed(1) : "");
@@ -64,6 +65,8 @@ export default function SettingsPage() {
         )}
       </form>
 
+      {data && <ProfileForm profile={data} onSave={setProfile} />}
+
       <section className={box}>
         <h2 className="font-bold">CSV 書き出し</h2>
         <p className="text-sm text-neutral-600 dark:text-neutral-300">
@@ -82,7 +85,7 @@ export default function SettingsPage() {
       <section className={box}>
         <h2 className="font-bold">全データの削除</h2>
         <p className="text-sm text-neutral-600 dark:text-neutral-300">
-          体重・食事の記録、目標、身長をすべて削除します。元に戻せません。
+          体重・食事の記録、目標、身長・年齢などの設定をすべて削除します。元に戻せません。
         </p>
         {confirming ? (
           <div className="flex gap-2">

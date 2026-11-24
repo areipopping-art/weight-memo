@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import type { Profile } from "./calorie";
 import { EMPTY, getServerSnapshot, getSnapshot, save, subscribe, type WeightRecord } from "./storage";
 
 export function useWeightMemo() {
@@ -36,10 +37,15 @@ export function useWeightMemo() {
     save({ ...getSnapshot(), goalDeadline });
   }
 
+  /** F-20 年齢・性別・活動量を保存 */
+  function setProfile(profile: Profile) {
+    save({ ...getSnapshot(), ...profile });
+  }
+
   /** F-19 全データを削除 */
   function deleteAll() {
     save(EMPTY);
   }
 
-  return { data, setGoalWeight, saveRecord, deleteRecord, setHeight, deleteAll, setGoalDeadline };
+  return { data, setGoalWeight, saveRecord, deleteRecord, setHeight, deleteAll, setGoalDeadline, setProfile };
 }
