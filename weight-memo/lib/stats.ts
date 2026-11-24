@@ -27,3 +27,19 @@ export function recordStreak(records: WeightRecord[], today: string): number {
   }
   return count;
 }
+
+/**
+ * F-18 記録を保存したことで、初めて目標に届いたか。
+ * 保存前の最新体重が目標より上（または記録なし）で、保存後の最新体重が目標以下なら true。
+ */
+export function justReachedGoal(
+  before: WeightRecord[],
+  after: WeightRecord[],
+  goalWeight: number | null,
+): boolean {
+  if (goalWeight === null) return false;
+  const latestBefore = sortNewestFirst(before)[0];
+  const latestAfter = sortNewestFirst(after)[0];
+  if (!latestAfter || latestAfter.weight > goalWeight) return false;
+  return !latestBefore || latestBefore.weight > goalWeight;
+}

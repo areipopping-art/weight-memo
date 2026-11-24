@@ -11,11 +11,13 @@ export function useWeightMemo() {
     save({ ...getSnapshot(), goalWeight });
   }
 
-  /** F-03 同じ日付の記録があれば上書き、なければ追加 */
-  function saveRecord(record: WeightRecord) {
+  /** F-03 同じ日付の記録があれば上書き、なければ追加。保存前と保存後の記録を返す */
+  function saveRecord(record: WeightRecord): { before: WeightRecord[]; after: WeightRecord[] } {
     const current = getSnapshot();
     const others = current.records.filter((r) => r.date !== record.date);
-    save({ ...current, records: [...others, record] });
+    const after = [...others, record];
+    save({ ...current, records: after });
+    return { before: current.records, after };
   }
 
   /** F-08 指定した日付の記録を削除 */

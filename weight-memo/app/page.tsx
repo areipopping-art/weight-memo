@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import CelebrationModal from "@/components/CelebrationModal";
 import GoalProgress from "@/components/GoalProgress";
 import PreviousDiff from "@/components/PreviousDiff";
 import Streak from "@/components/Streak";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate, todayString } from "@/lib/date";
+import { justReachedGoal } from "@/lib/stats";
 import { MAX_WEIGHT, MIN_WEIGHT, formatKg, parseWeight } from "@/lib/weight";
 
 export default function Home() {
@@ -14,6 +16,7 @@ export default function Home() {
   const [weight, setWeight] = useState("");
   const [meal, setMeal] = useState("");
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const [celebrating, setCelebrating] = useState(false); // F-18
 
   // data が null の間はサーバー側の表示（まだ localStorage を読んでいない）
   if (data === null) {
@@ -31,7 +34,8 @@ export default function Home() {
       setMessage({ ok: false, text: `体重は ${MIN_WEIGHT}〜${MAX_WEIGHT}kg の数字で入力してください` });
       return;
     }
-    saveRecord({ date: dateValue, weight: w, meal: meal.trim() });
+    const { before, after } = saveRecord({ date: dateValue, weight: w, meal: meal.trim() });
+    if (justReachedGoal(before, after, data!.goalWeight)) setCelebrating(true);
     setWeight("");
     setMeal("");
     setMessage({ ok: true, text: `${formatShortDate(dateValue)} の体重 ${formatKg(w)} を保存しました` });
@@ -113,6 +117,10 @@ export default function Home() {
           </p>
         )}
       </form>
+
+      {celebrating && data.goalWeight !== null && (
+        <CelebrationModal goalWeight={data.goalWeight} onClose={() => setCelebrating(false)} />
+      )}
     </div>
   );
 }
