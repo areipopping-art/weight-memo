@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
+import MealFields from "@/components/MealFields";
 import { formatShortDate } from "@/lib/date";
+import { mealsOf, trimMeals, type Meals } from "@/lib/meals";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_WEIGHT, MIN_WEIGHT, parseWeight } from "@/lib/weight";
 
@@ -14,7 +16,8 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
   const { data, saveRecord } = useWeightMemo();
   // null = まだ触っていない（保存済みの値を初期値として表示する）
   const [weight, setWeight] = useState<string | null>(null);
-  const [meal, setMeal] = useState<string | null>(null);
+  const [meals, setMeals] = useState<Meals | null>(null); // F-13
+  const [meal, setMeal] = useState<string | null>(null); // 以前の1行メモ
   const [error, setError] = useState<string | null>(null);
 
   const title = <h1 className="text-xl font-bold">記録の編集</h1>;
@@ -37,6 +40,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
   }
 
   const weightValue = weight ?? record.weight.toFixed(1);
+  const mealsValue = meals ?? mealsOf(record);
   const mealValue = meal ?? record.meal;
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -46,7 +50,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
       setError(`体重は ${MIN_WEIGHT}〜${MAX_WEIGHT}kg の数字で入力してください`);
       return;
     }
-    saveRecord({ date, weight: w, meal: mealValue.trim() });
+    saveRecord({ date, weight: w, meal: mealValue.trim(), meals: trimMeals(mealsValue) });
     router.push("/history");
   }
 
@@ -75,19 +79,24 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
           />
         </div>
 
-        <div className="space-y-1">
-          <label htmlFor="meal" className="block text-sm font-medium">
-            食事メモ <span className="font-normal text-neutral-500">（任意）</span>
-          </label>
-          <textarea
-            id="meal"
-            rows={2}
-            maxLength={200}
-            value={mealValue}
-            onChange={(e) => setMeal(e.target.value)}
-            className={input}
-          />
-        </div>
+        <MealFields idPrefix="edit-meal" value={mealsValue} onChange={setMeals} />
+
+        {/* 食事の区分ができる前の1行メモ。ある記録だけ表示する */}
+        {record.meal && (
+          <div className="space-y-1">
+            <label htmlFor="edit-memo" className="block text-sm font-medium">
+              メモ <span className="font-normal text-neutral-500">（以前の記録）</span>
+            </label>
+            <textarea
+              id="edit-memo"
+              rows={2}
+              maxLength={200}
+              value={mealValue}
+              onChange={(e) => setMeal(e.target.value)}
+              className={input}
+            />
+          </div>
+        )}
 
         <div className="flex gap-2">
           <Link

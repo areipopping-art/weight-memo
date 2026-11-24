@@ -1,9 +1,12 @@
 // F-09 自動保存：すべてのデータを localStorage に保存する
 
+import type { Meals } from "./meals";
+
 export type WeightRecord = {
   date: string; // "2026-11-24"（1日1件）
   weight: number; // 体重（kg、小数第1位まで）
-  meal: string; // 食事のひとことメモ（空でも可）
+  meal: string; // 食事のひとことメモ（F-13 以前の記録。新しい記録では空）
+  meals?: Meals; // F-13 朝・昼・夜・間食（空でも可）
 };
 
 export type Data = {

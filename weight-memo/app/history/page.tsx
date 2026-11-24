@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import MealList from "@/components/MealList";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate } from "@/lib/date";
 import { formatKg } from "@/lib/weight";
@@ -49,7 +50,7 @@ export default function HistoryPage() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-lg font-bold">{formatKg(r.weight)}</p>
-                {r.meal && <p className="mt-0.5 break-words text-sm text-neutral-600 dark:text-neutral-300">{r.meal}</p>}
+                <MealList record={r} />
               </div>
               {confirming === r.date ? (
                 <div className="flex shrink-0 gap-2">

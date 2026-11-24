@@ -3,10 +3,12 @@
 import { useState } from "react";
 import CelebrationModal from "@/components/CelebrationModal";
 import GoalProgress from "@/components/GoalProgress";
+import MealFields from "@/components/MealFields";
 import PreviousDiff from "@/components/PreviousDiff";
 import Streak from "@/components/Streak";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate, todayString } from "@/lib/date";
+import { EMPTY_MEALS, trimMeals } from "@/lib/meals";
 import { justReachedGoal } from "@/lib/stats";
 import { MAX_WEIGHT, MIN_WEIGHT, formatKg, parseWeight } from "@/lib/weight";
 
@@ -14,7 +16,7 @@ export default function Home() {
   const { data, saveRecord } = useWeightMemo();
   const [date, setDate] = useState<string | null>(null); // null = 今日
   const [weight, setWeight] = useState("");
-  const [meal, setMeal] = useState("");
+  const [meals, setMeals] = useState(EMPTY_MEALS); // F-13
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const [celebrating, setCelebrating] = useState(false); // F-18
 
@@ -34,10 +36,10 @@ export default function Home() {
       setMessage({ ok: false, text: `体重は ${MIN_WEIGHT}〜${MAX_WEIGHT}kg の数字で入力してください` });
       return;
     }
-    const { before, after } = saveRecord({ date: dateValue, weight: w, meal: meal.trim() });
+    const { before, after } = saveRecord({ date: dateValue, weight: w, meal: "", meals: trimMeals(meals) });
     if (justReachedGoal(before, after, data!.goalWeight)) setCelebrating(true);
     setWeight("");
-    setMeal("");
+    setMeals(EMPTY_MEALS);
     setMessage({ ok: true, text: `${formatShortDate(dateValue)} の体重 ${formatKg(w)} を保存しました` });
   }
 
@@ -89,20 +91,7 @@ export default function Home() {
           />
         </div>
 
-        <div className="space-y-1">
-          <label htmlFor="meal" className="block text-sm font-medium">
-            食事メモ <span className="font-normal text-neutral-500">（任意）</span>
-          </label>
-          <textarea
-            id="meal"
-            rows={2}
-            maxLength={200}
-            placeholder="例：朝 パン、昼 そば、夜 鍋"
-            value={meal}
-            onChange={(e) => setMeal(e.target.value)}
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-600 dark:bg-neutral-900"
-          />
-        </div>
+        <MealFields idPrefix="home-meal" value={meals} onChange={setMeals} />
 
         <button
           type="submit"
