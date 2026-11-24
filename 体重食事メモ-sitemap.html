@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>体重・食事メモ サイトマップ</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --surface: #ffffff; --text: #1f2328; --muted: #6b7280;
+    --border: #e3e3df; --line: #b8bcc4; --root: #1f2328; --root-text: #ffffff;
+    --mvp: #2f7d4f; --v1: #2f5fa8; --v2: #7a4ba6; --ok: #2f7d4f;
+    --pa: #d9480f; --pb: #0b7285; --pc: #6b7280;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16181c; --surface: #1f2228; --text: #e6e7ea; --muted: #9aa0aa;
+      --border: #2e323a; --line: #4a4f58; --root: #e6e7ea; --root-text: #16181c;
+      --mvp: #6fcf97; --v1: #7fa8e8; --v2: #c19be6; --ok: #6fcf97;
+      --pa: #ffa56b; --pb: #5fd3e6; --pc: #9aa0aa;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16181c; --surface: #1f2228; --text: #e6e7ea; --muted: #9aa0aa;
+    --border: #2e323a; --line: #4a4f58; --root: #e6e7ea; --root-text: #16181c;
+    --mvp: #6fcf97; --v1: #7fa8e8; --v2: #c19be6; --ok: #6fcf97;
+    --pa: #ffa56b; --pb: #5fd3e6; --pc: #9aa0aa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+    line-height: 1.6;
+  }
+  main { max-width: 960px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  h2 { font-size: 1.1rem; margin: 40px 0 12px; }
+  .lead { color: var(--muted); margin: 0 0 8px; font-size: .95rem; }
+  .muted { color: var(--muted); font-size: .85rem; }
+
+  .badge { display: inline-block; font-size: .68rem; font-weight: 700; padding: 0 7px; border-radius: 4px; color: var(--surface); background: var(--c); vertical-align: 1px; }
+  .b-mvp { --c: var(--mvp); } .b-v1 { --c: var(--v1); } .b-v2 { --c: var(--v2); }
+  .tag { font-size: .66rem; font-weight: 700; padding: 0 6px; border-radius: 4px; border: 1px solid currentColor; white-space: nowrap; }
+  .tag.a { color: var(--pa); } .tag.b { color: var(--pb); } .tag.c { color: var(--pc); }
+
+  /* 共通ナビ */
+  .nav-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+  .nav-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .nav-box .label { font-size: .75rem; color: var(--muted); margin-bottom: 8px; }
+  .tabbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; text-align: center; font-size: .78rem; }
+  .tabbar div { border: 1px solid var(--border); border-radius: 8px; padding: 6px 2px; }
+  .tabbar .ic { display: block; font-size: 1.1rem; }
+
+  /* ツリー */
+  ul.tree, ul.tree ul { list-style: none; margin: 0; padding: 0; }
+  ul.tree ul { margin-left: 22px; padding-left: 22px; border-left: 2px solid var(--line); }
+  ul.tree li { position: relative; padding: 6px 0; }
+  ul.tree ul > li::before { content: ""; position: absolute; left: -22px; top: 28px; width: 18px; border-top: 2px solid var(--line); }
+  ul.tree ul > li:last-child::after { content: ""; position: absolute; left: -24px; top: 30px; bottom: 0; border-left: 2px solid var(--bg); }
+  .node {
+    display: inline-flex; flex-direction: column; gap: 2px; max-width: 100%;
+    background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--c, var(--line));
+    border-radius: 8px; padding: 8px 14px; min-width: 240px;
+  }
+  .node .top { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .node b { font-size: .95rem; }
+  .node .path { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .75rem; color: var(--muted); }
+  .node .desc { font-size: .8rem; color: var(--muted); }
+  .node.modal { border-style: dashed; border-left-style: solid; }
+  .root > .node { background: var(--root); color: var(--root-text); border-color: var(--root); border-left-color: var(--mvp); }
+  .root > .node .path, .root > .node .desc { color: var(--root-text); opacity: .75; }
+
+  /* ページ一覧 */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: .84rem; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: .75rem; color: var(--muted); font-weight: 600; background: var(--bg); position: sticky; top: 0; }
+  tr:last-child td { border-bottom: none; }
+  td code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .78rem; }
+  td ul { margin: 0; padding-left: 16px; }
+  td .ph { display: block; margin-top: 2px; }
+  .id { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); white-space: nowrap; }
+
+  .checks { display: grid; gap: 8px; }
+  .check { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; display: grid; grid-template-columns: 24px 1fr; gap: 4px 8px; }
+  .check .mark { color: var(--ok); font-weight: 700; }
+  .check b { font-size: .9rem; }
+  .check p { grid-column: 2; margin: 0; font-size: .82rem; color: var(--muted); }
+
+  .summary { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 0; }
+  .summary div { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: .85rem; }
+  .summary b { font-size: 1.1rem; }
+
+  .note { margin-top: 28px; font-size: .85rem; color: var(--muted); }
+  .note a { color: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <h1>体重・食事メモ サイトマップ・ページ一覧</h1>
+  <p class="lead">ストーリーマップの5つの行動（目標を決める → 体重を記録する → 食事を記録する → 推移を振り返る → 目標を見直す）を、ページに落とし込んだものです。</p>
+  <div class="summary">
+    <div><span class="badge b-mvp">MVP</span> <b>3</b> ページ ＋ 共通部品</div>
+    <div><span class="badge b-v1">v1.0</span> <b>+3</b> ページ ＋ モーダル1</div>
+    <div><span class="badge b-v2">v2.0</span> <b>+1</b> ページ</div>
+  </div>
+
+  <h2>全ページ共通ナビゲーション</h2>
+  <div class="nav-grid">
+    <div class="nav-box">
+      <div class="label">画面下のタブバー（スマホで親指が届く位置）</div>
+      <div class="tabbar">
+        <div><span class="ic">🏠</span>ホーム</div>
+        <div><span class="ic">📋</span>記録一覧</div>
+        <div><span class="ic">📈</span>グラフ<br><span class="badge b-v1">v1.0</span></div>
+        <div><span class="ic">🎯</span>目標</div>
+      </div>
+    </div>
+    <div class="nav-box">
+      <div class="label">ヘッダー</div>
+      <p class="muted" style="margin:0">左：アプリ名（ホームへ戻る）<br>右：⚙ 設定 <span class="badge b-v1">v1.0</span></p>
+      <p class="muted" style="margin:8px 0 0">MVP ではグラフのタブと設定ボタンを出さず、3タブで始める。</p>
+    </div>
+  </div>
+
+  <h2>サイトマップ（最大2層）</h2>
+  <ul class="tree">
+    <li class="root">
+      <div class="node">
+        <div class="top"><b>ホーム（今日の記録）</b><span class="badge b-mvp">MVP</span></div>
+        <span class="path">/</span>
+        <span class="desc">開いてすぐ体重・食事を入力。記録済み表示と「目標まであと ◯kg」</span>
+      </div>
+      <ul>
+        <li>
+          <div class="node modal" style="--c: var(--v1)">
+            <div class="top"><b>目標達成のお祝い</b><span class="badge b-v1">v1.0</span><span class="tag a">A</span></div>
+            <span class="path">（モーダル：ページではない）</span>
+            <span class="desc">記録した体重が目標に届いたときに表示</span>
+          </div>
+        </li>
+        <li>
+          <div class="node" style="--c: var(--mvp)">
+            <div class="top"><b>記録一覧</b><span class="badge b-mvp">MVP</span></div>
+            <span class="path">/history</span>
+            <span class="desc">日付ごとの体重・食事メモ（新しい順）、削除</span>
+          </div>
+          <ul>
+            <li>
+              <div class="node" style="--c: var(--v1)">
+                <div class="top"><b>記録の編集</b><span class="badge b-v1">v1.0</span></div>
+                <span class="path">/history/[date]</span>
+                <span class="desc">その日の体重・食事（朝昼夜間食・カロリー）を修正</span>
+              </div>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <div class="node" style="--c: var(--v1)">
+            <div class="top"><b>グラフ</b><span class="badge b-v1">v1.0</span><span class="tag b">B</span></div>
+            <span class="path">/stats</span>
+            <span class="desc">体重の折れ線グラフ（目標ライン付き）、週・月の切り替え</span>
+          </div>
+        </li>
+        <li>
+          <div class="node" style="--c: var(--mvp)">
+            <div class="top"><b>目標設定</b><span class="badge b-mvp">MVP</span></div>
+            <span class="path">/goal</span>
+            <span class="desc">目標体重の入力・変更（v1.0 で期限・週ごとの目安・BMI）</span>
+          </div>
+          <ul>
+            <li>
+              <div class="node" style="--c: var(--v2)">
+                <div class="top"><b>達成記録</b><span class="badge b-v2">v2.0</span><span class="tag a">A</span></div>
+                <span class="path">/goal/achievements</span>
+                <span class="desc">これまでに達成した目標の一覧、次の目標の提案</span>
+              </div>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <div class="node" style="--c: var(--v1)">
+            <div class="top"><b>設定</b><span class="badge b-v1">v1.0</span></div>
+            <span class="path">/settings</span>
+            <span class="desc">身長の登録、CSV 書き出し（v2.0）、全データの削除</span>
+          </div>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>ページ一覧</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>ID</th><th>ページ名</th><th>URL</th><th>役割</th><th>主な機能（Phase）</th><th>対応する行動</th><th>ペルソナ</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="id">P-01</td>
+          <td><b>ホーム</b><span class="ph badge b-mvp">MVP</span></td>
+          <td><code>/</code></td>
+          <td>開いて10秒で今日の記録を終える</td>
+          <td><ul>
+            <li>体重の入力・保存（MVP）</li>
+            <li>食事のひとことメモ（MVP）</li>
+            <li>「今日は記録済み ✓」（MVP）</li>
+            <li>「目標まであと ◯kg」（MVP）</li>
+            <li>前回との差・連続記録日数（v1.0）</li>
+            <li>朝昼夜間食・カロリー合計（v1.0）</li>
+            <li>よく食べるものを履歴から選ぶ・写真（v2.0）</li>
+          </ul></td>
+          <td>2 体重を記録する<br>3 食事を記録する</td>
+          <td><span class="tag c">共通</span></td>
+        </tr>
+        <tr>
+          <td class="id">P-02</td>
+          <td><b>記録一覧</b><span class="ph badge b-mvp">MVP</span></td>
+          <td><code>/history</code></td>
+          <td>過去の記録を見返す</td>
+          <td><ul>
+            <li>日付ごとの一覧（新しい順）（MVP）</li>
+            <li>記録の削除（MVP）</li>
+          </ul></td>
+          <td>4 推移を振り返る</td>
+          <td><span class="tag c">共通</span></td>
+        </tr>
+        <tr>
+          <td class="id">P-03</td>
+          <td><b>目標設定</b><span class="ph badge b-mvp">MVP</span></td>
+          <td><code>/goal</code></td>
+          <td>目標を決める・見直す</td>
+          <td><ul>
+            <li>目標体重の入力・変更（MVP）</li>
+            <li>BMI 表示（v1.0）</li>
+            <li>期限と1週間あたりの目安（v1.0）</li>
+            <li>目標カロリーの自動計算（v2.0）</li>
+          </ul></td>
+          <td>1 目標を決める<br>5 目標を見直す</td>
+          <td><span class="tag c">共通</span></td>
+        </tr>
+        <tr>
+          <td class="id">P-04</td>
+          <td><b>記録の編集</b><span class="ph badge b-v1">v1.0</span></td>
+          <td><code>/history/[date]</code></td>
+          <td>入力ミスを直す</td>
+          <td><ul>
+            <li>体重・食事の修正（v1.0）</li>
+            <li>体脂肪率の入力（v2.0）</li>
+          </ul></td>
+          <td>2 体重を記録する<br>3 食事を記録する</td>
+          <td><span class="tag c">共通</span></td>
+        </tr>
+        <tr>
+          <td class="id">P-05</td>
+          <td><b>グラフ</b><span class="ph badge b-v1">v1.0</span></td>
+          <td><code>/stats</code></td>
+          <td>変化を数字と形で分析する</td>
+          <td><ul>
+            <li>体重の折れ線グラフ＋目標ライン（v1.0）</li>
+            <li>週・月の切り替え（v1.0）</li>
+            <li>食事と体重を並べて振り返り（v2.0）</li>
+          </ul></td>
+          <td>4 推移を振り返る</td>
+          <td><span class="tag b">B</span></td>
+        </tr>
+        <tr>
+          <td class="id">P-06</td>
+          <td><b>設定</b><span class="ph badge b-v1">v1.0</span></td>
+          <td><code>/settings</code></td>
+          <td>アプリ全体の情報を管理する</td>
+          <td><ul>
+            <li>身長の登録（v1.0）</li>
+            <li>全データの削除（v1.0）</li>
+            <li>CSV で書き出し（v2.0）</li>
+          </ul></td>
+          <td>（共通の仕組み）</td>
+          <td><span class="tag c">共通</span></td>
+        </tr>
+        <tr>
+          <td class="id">P-07</td>
+          <td><b>達成記録</b><span class="ph badge b-v2">v2.0</span></td>
+          <td><code>/goal/achievements</code></td>
+          <td>頑張りを実感して次の目標へ</td>
+          <td><ul>
+            <li>これまでの達成記録（v2.0）</li>
+            <li>達成ペースから次の目標を提案（v2.0）</li>
+          </ul></td>
+          <td>5 目標を見直す</td>
+          <td><span class="tag a">A</span> <span class="tag b">B</span></td>
+        </tr>
+        <tr>
+          <td class="id">M-01</td>
+          <td><b>目標達成のお祝い</b><span class="ph badge b-v1">v1.0</span></td>
+          <td class="muted">モーダル</td>
+          <td>達成の瞬間を盛り上げる</td>
+          <td><ul><li>お祝い演出（v1.0）</li></ul></td>
+          <td>5 目標を見直す</td>
+          <td><span class="tag a">A</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted">※「AI でカロリーを推定」（v2.0・外部APIが必要）は今回のページ構成には含めていません。</p>
+
+  <h2>設計チェック</h2>
+  <div class="checks">
+    <div class="check"><span class="mark">✓</span><b>階層が3層以内</b><p>最も深いのは「ホーム → 記録一覧 → 記録の編集」などの2層。</p></div>
+    <div class="check"><span class="mark">✓</span><b>重要な機能が2クリック以内</b><p>一番使う「記録する」はホームを開いた瞬間（0クリック）。一覧・グラフ・目標はタブから1クリック。</p></div>
+    <div class="check"><span class="mark">✓</span><b>ナビゲーションの一貫性</b><p>全ページ同じタブバーとヘッダー。URL も階層どおり（/history/…、/goal/…）。</p></div>
+    <div class="check"><span class="mark">✓</span><b>メンタルモデルに沿った構造</b><p>健康管理アプリで一般的な「下タブ＋ホームで記録」の形。ペルソナ A はホームだけで完結し、B はグラフ・設定まで使える。</p></div>
+  </div>
+
+  <p class="note">関連資料：<a href="体重食事メモ-story-map.html">ユーザーストーリーマップ</a></p>
+</main>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>体重・食事メモ ストーリーマップ</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --surface: #ffffff; --text: #1f2328; --muted: #6b7280;
+    --border: #e3e3df; --backbone: #1f2328; --backbone-text: #ffffff;
+    --mvp-accent: #2f7d4f; --v1-accent: #2f5fa8; --v2-accent: #7a4ba6; --line: #9ca3af;
+    --pa: #d9480f; --pb: #0b7285; --pc: #6b7280;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16181c; --surface: #1f2228; --text: #e6e7ea; --muted: #9aa0aa;
+      --border: #2e323a; --backbone: #e6e7ea; --backbone-text: #16181c;
+      --mvp-accent: #6fcf97; --v1-accent: #7fa8e8; --v2-accent: #c19be6; --line: #5b616b;
+      --pa: #ffa56b; --pb: #5fd3e6; --pc: #9aa0aa;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16181c; --surface: #1f2228; --text: #e6e7ea; --muted: #9aa0aa;
+    --border: #2e323a; --backbone: #e6e7ea; --backbone-text: #16181c;
+    --mvp-accent: #6fcf97; --v1-accent: #7fa8e8; --v2-accent: #c19be6; --line: #5b616b;
+    --pa: #ffa56b; --pb: #5fd3e6; --pc: #9aa0aa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+    line-height: 1.6;
+  }
+  main { max-width: 1280px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  h2 { font-size: 1.05rem; margin: 32px 0 12px; }
+  .lead { color: var(--muted); margin: 0 0 8px; font-size: .95rem; }
+
+  /* ペルソナ */
+  .personas { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+  .persona {
+    background: var(--surface); border: 1px solid var(--border); border-top: 4px solid var(--pc-color);
+    border-radius: 10px; padding: 14px 16px;
+  }
+  .persona h3 { margin: 0 0 4px; font-size: 1rem; color: var(--pc-color); }
+  .persona p { margin: 0; font-size: .85rem; color: var(--muted); }
+  .persona ul { margin: 8px 0 0; padding-left: 18px; font-size: .85rem; }
+  .persona.a { --pc-color: var(--pa); }
+  .persona.b { --pc-color: var(--pb); }
+
+  /* フィルター */
+  .filter { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 16px; align-items: center; font-size: .85rem; color: var(--muted); }
+  .filter button {
+    font: inherit; font-size: .82rem; padding: 4px 12px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text);
+  }
+  .filter button[aria-pressed="true"] { background: var(--backbone); color: var(--backbone-text); border-color: var(--backbone); }
+
+  /* マップ */
+  .map-wrap { overflow-x: auto; padding-bottom: 8px; }
+  .map { display: grid; grid-template-columns: 72px repeat(5, minmax(190px, 1fr)); gap: 12px; min-width: 1060px; }
+  .axis-label { font-size: .75rem; color: var(--muted); align-self: center; }
+  .step {
+    background: var(--backbone); color: var(--backbone-text);
+    border-radius: 10px; padding: 12px 10px; text-align: center; font-weight: 700; position: relative;
+  }
+  .step small { display: block; font-weight: 400; opacity: .75; font-size: .72rem; }
+  .step .n { display: block; font-size: .68rem; font-weight: 400; opacity: .6; }
+  .step:not(:last-child)::after {
+    content: "→"; position: absolute; right: -11px; top: 50%;
+    transform: translateY(-50%); color: var(--muted); font-weight: 400;
+  }
+  .release { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; margin-top: 10px; font-size: .8rem; font-weight: 700; }
+  .release::after { content: ""; flex: 1; border-top: 2px dashed var(--line); }
+  .release.mvp { color: var(--mvp-accent); }
+  .release.v1 { color: var(--v1-accent); }
+  .release.v2 { color: var(--v2-accent); }
+  .row-label { font-weight: 700; font-size: .85rem; padding-top: 8px; color: var(--accent); }
+  .cell { display: flex; flex-direction: column; gap: 8px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 4px solid var(--accent); border-radius: 8px; padding: 8px 12px 10px; font-size: .86rem;
+    transition: opacity .15s;
+  }
+  .card .meta { display: flex; gap: 6px; align-items: center; margin-bottom: 2px; }
+  .card .p { font-size: .7rem; color: var(--muted); }
+  .tag { font-size: .66rem; font-weight: 700; padding: 0 6px; border-radius: 4px; border: 1px solid currentColor; }
+  .tag.a { color: var(--pa); }
+  .tag.b { color: var(--pb); }
+  .tag.c { color: var(--pc); }
+  .card .ext { font-size: .7rem; color: var(--v2-accent); }
+  .mvp-row { --accent: var(--mvp-accent); }
+  .v1-row  { --accent: var(--v1-accent); }
+  .v2-row  { --accent: var(--v2-accent); }
+  .map.only-a .card:not([data-p~="a"]):not([data-p~="c"]),
+  .map.only-b .card:not([data-p~="b"]):not([data-p~="c"]) { opacity: .2; }
+
+  /* 共通の仕組み */
+  .infra {
+    background: var(--surface); border: 1px dashed var(--line); border-radius: 10px; padding: 12px 16px;
+    font-size: .88rem;
+  }
+  .infra ul { margin: 4px 0 0; padding-left: 18px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; font-size: .82rem; color: var(--muted); }
+  .legend .sw::before {
+    content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; background: var(--c);
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>体重・食事メモ ユーザーストーリーマップ</h1>
+  <p class="lead">横軸＝ユーザーがしたいこと（時系列の行動フロー）／縦軸＝そのために必要な機能（上ほど優先度が高い）。MVP は 30分〜1時間で作れる範囲です。</p>
+
+  <h2>ペルソナ</h2>
+  <div class="personas">
+    <div class="persona a">
+      <h3>A：ゆるく続けたい人</h3>
+      <p>ダイエット初心者。アプリは三日坊主になりがち。</p>
+      <ul>
+        <li>毎日 10 秒で記録できれば十分</li>
+        <li>細かい数字より「続いている実感」がほしい</li>
+      </ul>
+    </div>
+    <div class="persona b">
+      <h3>B：しっかり管理したい人</h3>
+      <p>数字で状況を把握したい。カロリーも気にしている。</p>
+      <ul>
+        <li>グラフやカロリーで変化を分析したい</li>
+        <li>目標までのペースを計算したい</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>ストーリーマップ</h2>
+  <div class="filter" role="group" aria-label="ペルソナで絞り込み">
+    表示：
+    <button type="button" data-f="all" aria-pressed="true">すべて</button>
+    <button type="button" data-f="a" aria-pressed="false">A 向けを強調</button>
+    <button type="button" data-f="b" aria-pressed="false">B 向けを強調</button>
+  </div>
+
+  <div class="map-wrap">
+    <div class="map" id="map">
+      <div class="axis-label">したいこと →</div>
+      <div class="step"><span class="n">1</span>目標を決める<small>何kgを目指すか決めたい</small></div>
+      <div class="step"><span class="n">2</span>体重を記録する<small>毎日サッと記録したい</small></div>
+      <div class="step"><span class="n">3</span>食事を記録する<small>何を食べたか残したい</small></div>
+      <div class="step"><span class="n">4</span>推移を振り返る<small>減っているか確かめたい</small></div>
+      <div class="step"><span class="n">5</span>目標を見直す<small>達成・未達を受けて次へ</small></div>
+
+      <!-- MVP -->
+      <div class="release mvp">MVP（30分〜1時間：A が毎日記録して見返せる）</div>
+      <div class="row-label mvp-row">MVP</div>
+      <div class="cell mvp-row">
+        <div class="card" data-p="c"><div class="meta"><span class="p">P1</span><span class="tag c">共通</span></div>目標体重を入力</div>
+      </div>
+      <div class="cell mvp-row">
+        <div class="card" data-p="c"><div class="meta"><span class="p">P1</span><span class="tag c">共通</span></div>日付と体重を入力して保存</div>
+        <div class="card" data-p="a"><div class="meta"><span class="p">P2</span><span class="tag a">A</span></div>「今日は記録済み ✓」を表示</div>
+        <div class="card" data-p="c"><div class="meta"><span class="p">P3</span><span class="tag c">共通</span></div>記録の削除（入力ミス用）</div>
+      </div>
+      <div class="cell mvp-row">
+        <div class="card" data-p="a"><div class="meta"><span class="p">P1</span><span class="tag a">A</span></div>食べたものをひとことメモ</div>
+      </div>
+      <div class="cell mvp-row">
+        <div class="card" data-p="c"><div class="meta"><span class="p">P1</span><span class="tag c">共通</span></div>記録の一覧（新しい順）</div>
+        <div class="card" data-p="a"><div class="meta"><span class="p">P2</span><span class="tag a">A</span></div>「目標まであと ◯kg」を表示</div>
+      </div>
+      <div class="cell mvp-row">
+        <div class="card" data-p="c"><div class="meta"><span class="p">P1</span><span class="tag c">共通</span></div>目標体重を変更</div>
+      </div>
+
+      <!-- v1.0 -->
+      <div class="release v1">v1.0（A の継続を後押し＋B の分析ニーズに対応）</div>
+      <div class="row-label v1-row">v1.0</div>
+      <div class="cell v1-row">
+        <div class="card" data-p="b"><div class="meta"><span class="p">P1</span><span class="tag b">B</span></div>身長を入れて BMI を表示</div>
+        <div class="card" data-p="b"><div class="meta"><span class="p">P2</span><span class="tag b">B</span></div>目標の期限と「1週間あたりの目安」</div>
+      </div>
+      <div class="cell v1-row">
+        <div class="card" data-p="a"><div class="meta"><span class="p">P1</span><span class="tag a">A</span></div>前回との差（±kg）を表示</div>
+        <div class="card" data-p="a"><div class="meta"><span class="p">P2</span><span class="tag a">A</span></div>連続記録日数</div>
+        <div class="card" data-p="c"><div class="meta"><span class="p">P3</span><span class="tag c">共通</span></div>記録の編集</div>
+      </div>
+      <div class="cell v1-row">
+        <div class="card" data-p="b"><div class="meta"><span class="p">P1</span><span class="tag b">B</span></div>朝・昼・夜・間食に分けて記録</div>
+        <div class="card" data-p="b"><div class="meta"><span class="p">P2</span><span class="tag b">B</span></div>カロリーを入れて1日の合計を表示</div>
+      </div>
+      <div class="cell v1-row">
+        <div class="card" data-p="b"><div class="meta"><span class="p">P1</span><span class="tag b">B</span></div>体重の折れ線グラフ（目標ライン付き）</div>
+        <div class="card" data-p="b"><div class="meta"><span class="p">P2</span><span class="tag b">B</span></div>週・月の切り替え</div>
+      </div>
+      <div class="cell v1-row">
+        <div class="card" data-p="a"><div class="meta"><span class="p">P1</span><span class="tag a">A</span></div>目標達成のお祝い演出</div>
+      </div>
+
+      <!-- v2.0 -->
+      <div class="release v2">v2.0（もっと手軽に・もっと深く）</div>
+      <div class="row-label v2-row">v2.0</div>
+      <div class="cell v2-row">
+        <div class="card" data-p="b"><div class="meta"><span class="p">P1</span><span class="tag b">B</span></div>目標カロリーの自動計算</div>
+      </div>
+      <div class="cell v2-row">
+        <div class="card" data-p="b"><div class="meta"><span class="p">P1</span><span class="tag b">B</span></div>体脂肪率も記録</div>
+      </div>
+      <div class="cell v2-row">
+        <div class="card" data-p="a"><div class="meta"><span class="p">P1</span><span class="tag a">A</span></div>よく食べるものを履歴から選ぶ</div>
+        <div class="card" data-p="a"><div class="meta"><span class="p">P2</span><span class="tag a">A</span></div>食事の写真で記録</div>
+        <div class="card" data-p="b"><div class="meta"><span class="p">P3</span><span class="tag b">B</span></div>AI でカロリーを推定<div class="ext">※ 外部APIが必要</div></div>
+      </div>
+      <div class="cell v2-row">
+        <div class="card" data-p="b"><div class="meta"><span class="p">P1</span><span class="tag b">B</span></div>食事と体重の変化を並べて振り返り</div>
+        <div class="card" data-p="b"><div class="meta"><span class="p">P2</span><span class="tag b">B</span></div>CSV で書き出し（分析・バックアップ）</div>
+      </div>
+      <div class="cell v2-row">
+        <div class="card" data-p="b"><div class="meta"><span class="p">P1</span><span class="tag b">B</span></div>達成ペースから次の目標を提案</div>
+        <div class="card" data-p="a"><div class="meta"><span class="p">P2</span><span class="tag a">A</span></div>これまでの達成記録</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="sw" style="--c: var(--mvp-accent)">MVP</span>
+    <span class="sw" style="--c: var(--v1-accent)">v1.0</span>
+    <span class="sw" style="--c: var(--v2-accent)">v2.0</span>
+    <span><span class="tag a">A</span> ゆるく続けたい人向け</span>
+    <span><span class="tag b">B</span> しっかり管理したい人向け</span>
+    <span><span class="tag c">共通</span> 両方に必要</span>
+    <span>P1〜P3 = 同じリリース内の優先度</span>
+  </div>
+
+  <h2>共通の仕組み（どの行動にも関わるもの）</h2>
+  <div class="infra">
+    <ul>
+      <li>ブラウザに自動保存（localStorage）：閉じても記録が消えない</li>
+      <li>スマホ優先のレイアウト：片手で 10 秒以内に記録できる</li>
+      <li>データはこの端末の中だけに保存（ログイン不要）</li>
+    </ul>
+  </div>
+</main>
+<script>
+  (function () {
+    var map = document.getElementById('map');
+    var buttons = document.querySelectorAll('.filter button');
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var f = btn.getAttribute('data-f');
+        map.classList.remove('only-a', 'only-b');
+        if (f !== 'all') map.classList.add('only-' + f);
+        buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+      });
+    });
+  })();
+</script>
+</body>
+</html>
