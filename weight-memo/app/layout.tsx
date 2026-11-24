@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
+import { M_PLUS_Rounded_1c } from "next/font/google";
 import Link from "next/link";
 import { Suspense } from "react";
 import TabBar, { TabBarNav } from "@/components/TabBar";
 import "./globals.css";
+
+// 丸ゴシック（日本語は文字数が多いため、先読みはせず表示しながら読み込む）
+const rounded = M_PLUS_Rounded_1c({
+  weight: ["400", "700", "800"],
+  preload: false,
+  display: "swap",
+  variable: "--font-m-plus-rounded",
+});
 
 export const metadata: Metadata = {
   title: "体重・食事メモ",
@@ -11,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ja" className="h-full antialiased">
+    <html lang="ja" className={`${rounded.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <header className="border-b border-black/10 bg-white dark:border-white/10 dark:bg-neutral-900">
           <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
