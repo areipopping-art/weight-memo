@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import BodyFatField from "@/components/BodyFatField";
 import MealFields from "@/components/MealFields";
+import PhotoFields from "@/components/PhotoFields";
 import { formatShortDate } from "@/lib/date";
+import { applyPhotoChanges, type PhotoChanges } from "@/lib/photos";
 import { MAX_KCAL, kcalInputOf, mealsOf, parseKcal, trimMeals, type KcalInput, type Meals } from "@/lib/meals";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_BODY_FAT, MAX_WEIGHT, MIN_BODY_FAT, MIN_WEIGHT, parseBodyFat, parseWeight } from "@/lib/weight";
@@ -20,6 +22,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
   const [bodyFat, setBodyFat] = useState<string | null>(null); // F-21
   const [meals, setMeals] = useState<Meals | null>(null); // F-13
   const [kcal, setKcal] = useState<KcalInput | null>(null); // F-14
+  const [photos, setPhotos] = useState<PhotoChanges>({}); // F-23
   const [meal, setMeal] = useState<string | null>(null); // 以前の1行メモ
   const [error, setError] = useState<string | null>(null);
 
@@ -48,7 +51,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
   const kcalValue = kcal ?? kcalInputOf(record);
   const mealValue = meal ?? record.meal;
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const w = parseWeight(weightValue);
     if (w === null) {
@@ -66,6 +69,12 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
       return;
     }
     saveRecord({ date, weight: w, bodyFat: parsedBodyFat, meal: mealValue.trim(), meals: trimMeals(mealsValue), kcal: parsedKcal });
+    try {
+      await applyPhotoChanges(date, photos);
+    } catch {
+      setError("写真を保存できませんでした（体重と食事は保存しました）");
+      return;
+    }
     router.push("/history");
   }
 
@@ -104,6 +113,8 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
           onKcalChange={setKcal}
           records={data.records}
         />
+
+        <PhotoFields idPrefix="edit-photo" date={date} changes={photos} onChange={setPhotos} />
 
         {/* 食事の区分ができる前の1行メモ。ある記録だけ表示する */}
         {record.meal && (

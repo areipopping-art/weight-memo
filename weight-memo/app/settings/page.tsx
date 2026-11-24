@@ -85,7 +85,7 @@ export default function SettingsPage() {
       <section className={box}>
         <h2 className="font-bold">全データの削除</h2>
         <p className="text-sm text-neutral-600 dark:text-neutral-300">
-          体重・食事の記録、目標、身長・年齢などの設定をすべて削除します。元に戻せません。
+          体重・食事の記録と写真、目標、身長・年齢などの設定をすべて削除します。元に戻せません。
         </p>
         {confirming ? (
           <div className="flex gap-2">

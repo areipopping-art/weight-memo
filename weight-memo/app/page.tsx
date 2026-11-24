@@ -5,11 +5,13 @@ import BodyFatField from "@/components/BodyFatField";
 import CelebrationModal from "@/components/CelebrationModal";
 import GoalProgress from "@/components/GoalProgress";
 import MealFields from "@/components/MealFields";
+import PhotoFields from "@/components/PhotoFields";
 import PreviousDiff from "@/components/PreviousDiff";
 import Streak from "@/components/Streak";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate, todayString } from "@/lib/date";
 import { EMPTY_KCAL_INPUT, EMPTY_MEALS, MAX_KCAL, formatKcal, parseKcal, totalKcal, trimMeals } from "@/lib/meals";
+import { applyPhotoChanges, type PhotoChanges } from "@/lib/photos";
 import { justReachedGoal } from "@/lib/stats";
 import {
   MAX_BODY_FAT,
@@ -29,6 +31,7 @@ export default function Home() {
   const [bodyFat, setBodyFat] = useState(""); // F-21
   const [meals, setMeals] = useState(EMPTY_MEALS); // F-13
   const [kcal, setKcal] = useState(EMPTY_KCAL_INPUT); // F-14
+  const [photos, setPhotos] = useState<PhotoChanges>({}); // F-23
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const [celebrating, setCelebrating] = useState(false); // F-18
 
@@ -68,6 +71,10 @@ export default function Home() {
       kcal: parsedKcal,
     });
     if (justReachedGoal(before, after, data!.goalWeight)) setCelebrating(true);
+    applyPhotoChanges(dateValue, photos).catch(() =>
+      setMessage({ ok: false, text: "写真を保存できませんでした（体重と食事は保存しました）" }),
+    );
+    setPhotos({});
     setWeight("");
     setBodyFat("");
     setMeals(EMPTY_MEALS);
@@ -135,6 +142,8 @@ export default function Home() {
           onKcalChange={setKcal}
           records={data.records}
         />
+
+        <PhotoFields idPrefix="home-photo" date={dateValue} changes={photos} onChange={setPhotos} />
 
         <button
           type="submit"

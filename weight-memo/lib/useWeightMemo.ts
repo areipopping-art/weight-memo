@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react";
 import { firstWeightSince } from "./achievements";
 import type { Profile } from "./calorie";
 import { todayString } from "./date";
+import { clearPhotos, deletePhotosForDate } from "./photos";
 import { justReachedGoal, sortNewestFirst } from "./stats";
 import { EMPTY, getServerSnapshot, getSnapshot, save, subscribe, type WeightRecord } from "./storage";
 
@@ -51,6 +52,8 @@ export function useWeightMemo() {
   function deleteRecord(date: string) {
     const current = getSnapshot();
     save({ ...current, records: current.records.filter((r) => r.date !== date) });
+    // F-23 その日の写真も消す
+    deletePhotosForDate(date).catch(() => console.error("[weight-memo] 写真を削除できませんでした"));
   }
 
   /** F-19 身長（cm）を保存 */
@@ -71,6 +74,8 @@ export function useWeightMemo() {
   /** F-19 全データを削除 */
   function deleteAll() {
     save(EMPTY);
+    // F-23 写真もすべて消す
+    clearPhotos().catch(() => console.error("[weight-memo] 写真を削除できませんでした"));
   }
 
   return { data, setGoalWeight, saveRecord, deleteRecord, setHeight, deleteAll, setGoalDeadline, setProfile };

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import MealList from "@/components/MealList";
+import RecordPhotos from "@/components/RecordPhotos";
 import { formatKcal, totalKcal } from "@/lib/meals";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate } from "@/lib/date";
@@ -60,6 +61,7 @@ export default function HistoryPage() {
                   )}
                 </p>
                 <MealList record={r} />
+                <RecordPhotos date={r.date} />
               </div>
               {confirming === r.date ? (
                 <div className="flex shrink-0 gap-2">
