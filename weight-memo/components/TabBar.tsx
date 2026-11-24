@@ -9,9 +9,13 @@ const tabs = [
   { href: "/goal", label: "目標", icon: "🎯" },
 ];
 
+/** 現在のページに合わせてタブを強調する */
 export default function TabBar() {
-  const pathname = usePathname();
+  return <TabBarNav pathname={usePathname()} />;
+}
 
+/** pathname が null のときはどのタブも強調しない（読み込み中の表示用） */
+export function TabBarNav({ pathname }: { pathname: string | null }) {
   return (
     <nav
       aria-label="メインメニュー"
@@ -19,7 +23,8 @@ export default function TabBar() {
     >
       <ul className="mx-auto grid max-w-md grid-cols-3">
         {tabs.map((tab) => {
-          const active = tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
+          const active =
+            pathname !== null && (tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href));
           return (
             <li key={tab.href}>
               <Link

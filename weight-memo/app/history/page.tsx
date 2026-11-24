@@ -72,14 +72,23 @@ export default function HistoryPage() {
                   </button>
                 </div>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => setConfirming(r.date)}
-                  aria-label={`${formatShortDate(r.date)} の記録を削除`}
-                  className="shrink-0 rounded-md px-2 py-1 text-xs text-neutral-500 hover:bg-neutral-100 hover:text-red-600 dark:hover:bg-neutral-700"
-                >
-                  削除
-                </button>
+                <div className="flex shrink-0 gap-1">
+                  <Link
+                    href={`/history/${r.date}`}
+                    aria-label={`${formatShortDate(r.date)} の記録を編集`}
+                    className="rounded-md px-2 py-1 text-xs text-emerald-700 hover:bg-neutral-100 dark:text-emerald-400 dark:hover:bg-neutral-700"
+                  >
+                    編集
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setConfirming(r.date)}
+                    aria-label={`${formatShortDate(r.date)} の記録を削除`}
+                    className="rounded-md px-2 py-1 text-xs text-neutral-500 hover:bg-neutral-100 hover:text-red-600 dark:hover:bg-neutral-700"
+                  >
+                    削除
+                  </button>
+                </div>
               )}
             </li>
           ))}

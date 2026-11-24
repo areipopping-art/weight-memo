@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import TabBar from "@/components/TabBar";
+import { Suspense } from "react";
+import TabBar, { TabBarNav } from "@/components/TabBar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -34,7 +35,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </p>
         </main>
 
-        <TabBar />
+        {/* usePathname は動的なページ（/history/[date]）では実行時にしか決まらないため Suspense で囲む */}
+        <Suspense fallback={<TabBarNav pathname={null} />}>
+          <TabBar />
+        </Suspense>
       </body>
     </html>
   );
