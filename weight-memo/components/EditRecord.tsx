@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
+import BodyFatField from "@/components/BodyFatField";
 import MealFields from "@/components/MealFields";
 import { formatShortDate } from "@/lib/date";
 import { MAX_KCAL, kcalInputOf, mealsOf, parseKcal, trimMeals, type KcalInput, type Meals } from "@/lib/meals";
 import { useWeightMemo } from "@/lib/useWeightMemo";
-import { MAX_WEIGHT, MIN_WEIGHT, parseWeight } from "@/lib/weight";
+import { MAX_BODY_FAT, MAX_WEIGHT, MIN_BODY_FAT, MIN_WEIGHT, parseBodyFat, parseWeight } from "@/lib/weight";
 
 /** F-12 過去の記録の体重・食事を修正する */
 export default function EditRecord({ params }: { params: Promise<{ date: string }> }) {
@@ -16,6 +17,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
   const { data, saveRecord } = useWeightMemo();
   // null = まだ触っていない（保存済みの値を初期値として表示する）
   const [weight, setWeight] = useState<string | null>(null);
+  const [bodyFat, setBodyFat] = useState<string | null>(null); // F-21
   const [meals, setMeals] = useState<Meals | null>(null); // F-13
   const [kcal, setKcal] = useState<KcalInput | null>(null); // F-14
   const [meal, setMeal] = useState<string | null>(null); // 以前の1行メモ
@@ -41,6 +43,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
   }
 
   const weightValue = weight ?? record.weight.toFixed(1);
+  const bodyFatValue = bodyFat ?? (record.bodyFat != null ? record.bodyFat.toFixed(1) : "");
   const mealsValue = meals ?? mealsOf(record);
   const kcalValue = kcal ?? kcalInputOf(record);
   const mealValue = meal ?? record.meal;
@@ -52,12 +55,17 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
       setError(`体重は ${MIN_WEIGHT}〜${MAX_WEIGHT}kg の数字で入力してください`);
       return;
     }
+    const parsedBodyFat = parseBodyFat(bodyFatValue);
+    if (parsedBodyFat === "invalid") {
+      setError(`体脂肪率は ${MIN_BODY_FAT}〜${MAX_BODY_FAT}% の数字で入力してください`);
+      return;
+    }
     const parsedKcal = parseKcal(kcalValue);
     if (parsedKcal === null) {
       setError(`カロリーは 0〜${MAX_KCAL}kcal の数字で入力してください`);
       return;
     }
-    saveRecord({ date, weight: w, meal: mealValue.trim(), meals: trimMeals(mealsValue), kcal: parsedKcal });
+    saveRecord({ date, weight: w, bodyFat: parsedBodyFat, meal: mealValue.trim(), meals: trimMeals(mealsValue), kcal: parsedKcal });
     router.push("/history");
   }
 
@@ -85,6 +93,8 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
             className={`${input} text-2xl`}
           />
         </div>
+
+        <BodyFatField id="edit-body-fat" value={bodyFatValue} onChange={setBodyFat} />
 
         <MealFields
           idPrefix="edit-meal"

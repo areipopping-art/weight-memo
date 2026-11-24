@@ -6,7 +6,7 @@ import MealList from "@/components/MealList";
 import { formatKcal, totalKcal } from "@/lib/meals";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate } from "@/lib/date";
-import { formatKg } from "@/lib/weight";
+import { formatBodyFat, formatKg } from "@/lib/weight";
 
 const WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -52,6 +52,9 @@ export default function HistoryPage() {
               <div className="min-w-0 flex-1">
                 <p className="text-lg font-bold">
                   {formatKg(r.weight)}
+                  {r.bodyFat != null && (
+                    <span className="ml-2 text-sm font-normal text-neutral-500">体脂肪 {formatBodyFat(r.bodyFat)}</span>
+                  )}
                   {totalKcal(r) !== null && (
                     <span className="ml-2 text-sm font-normal text-neutral-500">合計 {formatKcal(totalKcal(r)!)}</span>
                   )}

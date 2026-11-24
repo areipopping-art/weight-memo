@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import BodyFatField from "@/components/BodyFatField";
 import CelebrationModal from "@/components/CelebrationModal";
 import GoalProgress from "@/components/GoalProgress";
 import MealFields from "@/components/MealFields";
@@ -10,12 +11,22 @@ import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate, todayString } from "@/lib/date";
 import { EMPTY_KCAL_INPUT, EMPTY_MEALS, MAX_KCAL, formatKcal, parseKcal, totalKcal, trimMeals } from "@/lib/meals";
 import { justReachedGoal } from "@/lib/stats";
-import { MAX_WEIGHT, MIN_WEIGHT, formatKg, parseWeight } from "@/lib/weight";
+import {
+  MAX_BODY_FAT,
+  MAX_WEIGHT,
+  MIN_BODY_FAT,
+  MIN_WEIGHT,
+  formatBodyFat,
+  formatKg,
+  parseBodyFat,
+  parseWeight,
+} from "@/lib/weight";
 
 export default function Home() {
   const { data, saveRecord } = useWeightMemo();
   const [date, setDate] = useState<string | null>(null); // null = 今日
   const [weight, setWeight] = useState("");
+  const [bodyFat, setBodyFat] = useState(""); // F-21
   const [meals, setMeals] = useState(EMPTY_MEALS); // F-13
   const [kcal, setKcal] = useState(EMPTY_KCAL_INPUT); // F-14
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
@@ -38,6 +49,11 @@ export default function Home() {
       setMessage({ ok: false, text: `体重は ${MIN_WEIGHT}〜${MAX_WEIGHT}kg の数字で入力してください` });
       return;
     }
+    const parsedBodyFat = parseBodyFat(bodyFat);
+    if (parsedBodyFat === "invalid") {
+      setMessage({ ok: false, text: `体脂肪率は ${MIN_BODY_FAT}〜${MAX_BODY_FAT}% の数字で入力してください` });
+      return;
+    }
     const parsedKcal = parseKcal(kcal);
     if (parsedKcal === null) {
       setMessage({ ok: false, text: `カロリーは 0〜${MAX_KCAL}kcal の数字で入力してください` });
@@ -46,12 +62,14 @@ export default function Home() {
     const { before, after } = saveRecord({
       date: dateValue,
       weight: w,
+      bodyFat: parsedBodyFat,
       meal: "",
       meals: trimMeals(meals),
       kcal: parsedKcal,
     });
     if (justReachedGoal(before, after, data!.goalWeight)) setCelebrating(true);
     setWeight("");
+    setBodyFat("");
     setMeals(EMPTY_MEALS);
     setKcal(EMPTY_KCAL_INPUT);
     setMessage({ ok: true, text: `${formatShortDate(dateValue)} の体重 ${formatKg(w)} を保存しました` });
@@ -65,6 +83,7 @@ export default function Home() {
         <p className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-300">
           <span className="font-bold">今日は記録済み ✓</span>
           <span className="ml-2 text-sm">{formatKg(todayRecord.weight)}</span>
+          {todayRecord.bodyFat != null && <span className="ml-2 text-sm">・体脂肪率 {formatBodyFat(todayRecord.bodyFat)}</span>}
           {todayKcal !== null && <span className="ml-2 text-sm">・合計 {formatKcal(todayKcal)}</span>}
         </p>
       )}
@@ -105,6 +124,8 @@ export default function Home() {
             className="w-full rounded-md border border-neutral-300 px-3 py-2 text-2xl dark:border-neutral-600 dark:bg-neutral-900"
           />
         </div>
+
+        <BodyFatField id="home-body-fat" value={bodyFat} onChange={setBodyFat} />
 
         <MealFields idPrefix="home-meal" value={meals} onChange={setMeals} kcal={kcal} onKcalChange={setKcal} />
 

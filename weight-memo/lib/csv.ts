@@ -15,6 +15,7 @@ export function recordsToCsv(records: WeightRecord[]): string {
   const header = [
     "日付",
     "体重(kg)",
+    "体脂肪率(%)",
     ...MEAL_KEYS.flatMap((k) => [MEAL_LABELS[k], `${MEAL_LABELS[k]}(kcal)`]),
     "合計(kcal)",
     "メモ",
@@ -27,6 +28,7 @@ export function recordsToCsv(records: WeightRecord[]): string {
       return [
         r.date,
         r.weight.toFixed(1),
+        r.bodyFat != null ? r.bodyFat.toFixed(1) : null,
         ...MEAL_KEYS.flatMap((k) => [meals[k], r.kcal?.[k] ?? null]),
         totalKcal(r),
         r.meal,

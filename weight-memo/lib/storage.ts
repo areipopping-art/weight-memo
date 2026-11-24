@@ -8,6 +8,7 @@ export type WeightRecord = {
   meal: string; // 食事のひとことメモ（F-13 以前の記録。新しい記録では空）
   meals?: Meals; // F-13 朝・昼・夜・間食（空でも可）
   kcal?: Kcal; // F-14 区分ごとのカロリー（未入力は null）
+  bodyFat?: number | null; // F-21 体脂肪率（%、未入力は null）
 };
 
 export type Data = {

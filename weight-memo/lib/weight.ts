@@ -23,3 +23,19 @@ export function parseHeight(input: string): number | null {
   if (n < MIN_HEIGHT || n > MAX_HEIGHT) return null;
   return Math.round(n * 10) / 10;
 }
+
+// F-21 体脂肪率
+export const MIN_BODY_FAT = 3;
+export const MAX_BODY_FAT = 60;
+
+/** 体脂肪率（%、小数第1位まで）に変換。空欄は null、不正な値は "invalid" */
+export function parseBodyFat(input: string): number | null | "invalid" {
+  if (input.trim() === "") return null;
+  const n = Number(input);
+  if (!Number.isFinite(n) || n < MIN_BODY_FAT || n > MAX_BODY_FAT) return "invalid";
+  return Math.round(n * 10) / 10;
+}
+
+export function formatBodyFat(n: number): string {
+  return `${n.toFixed(1)}%`;
+}
