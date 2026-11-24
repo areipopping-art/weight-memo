@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import TabBar from "@/components/TabBar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -9,7 +11,24 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ja" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <header className="border-b border-black/10 bg-white dark:border-white/10 dark:bg-neutral-900">
+          <div className="mx-auto flex max-w-md items-center px-4 py-3">
+            <Link href="/" className="text-lg font-bold">
+              体重・食事メモ
+            </Link>
+          </div>
+        </header>
+
+        <main className="mx-auto w-full max-w-md flex-1 px-4 pt-4 pb-28">
+          {children}
+          <p className="mt-10 text-center text-xs text-neutral-500">
+            記録はこの端末のブラウザにだけ保存されます。共有のパソコンでは他の人にも見えるのでご注意ください。
+          </p>
+        </main>
+
+        <TabBar />
+      </body>
     </html>
   );
 }
