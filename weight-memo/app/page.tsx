@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import GoalProgress from "@/components/GoalProgress";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate, todayString } from "@/lib/date";
 import { MAX_WEIGHT, MIN_WEIGHT, formatKg, parseWeight } from "@/lib/weight";
@@ -44,6 +45,8 @@ export default function Home() {
           <span className="ml-2 text-sm">{formatKg(todayRecord.weight)}</span>
         </p>
       )}
+
+      <GoalProgress data={data} />
 
       <form onSubmit={handleSubmit} className="space-y-4 rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800">
         <div className="space-y-1">
