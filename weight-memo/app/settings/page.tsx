@@ -3,6 +3,7 @@
 import { useState } from "react";
 import PersonaSection from "@/components/PersonaSection";
 import ProfileForm from "@/components/ProfileForm";
+import SexSection from "@/components/SexSection";
 import { downloadCsv, recordsToCsv } from "@/lib/csv";
 import { todayString } from "@/lib/date";
 import { showsDetail } from "@/lib/persona";
@@ -11,7 +12,7 @@ import { MAX_HEIGHT, MIN_HEIGHT, parseHeight } from "@/lib/weight";
 
 /** F-19 設定：身長の登録と全データの削除。F-20 カロリー計算用の情報。F-25 CSV 書き出し */
 export default function SettingsPage() {
-  const { data, setHeight, deleteAll, setProfile, setPersona } = useWeightMemo();
+  const { data, setHeight, deleteAll, setProfile, setPersona, setSex } = useWeightMemo();
   // null = まだ触っていない（現在の身長を初期値として表示する）
   const [input, setInput] = useState<string | null>(null);
   const value = input ?? (data?.height != null ? data.height.toFixed(1) : "");
@@ -38,6 +39,7 @@ export default function SettingsPage() {
       <h1 className="text-xl font-extrabold text-sakura-700 dark:text-sakura-300">⚙️ 設定</h1>
 
       {data && <PersonaSection value={data.persona} onChange={setPersona} />}
+      {data && <SexSection value={data.sex} onChange={setSex} />}
 
       <form onSubmit={handleSubmit} className={box}>
         <label htmlFor="height" className="block text-sm font-medium">

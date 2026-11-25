@@ -5,23 +5,25 @@ import {
   ACTIVITIES,
   MAX_AGE,
   MIN_AGE,
-  SEX_LABELS,
   parseAge,
   type Activity,
   type Profile,
-  type Sex,
 } from "@/lib/calorie";
 
-/** F-20 カロリー計算に使う年齢・性別・活動量 */
-export default function ProfileForm({ profile, onSave }: { profile: Profile; onSave: (p: Profile) => void }) {
+/** F-20 カロリー計算に使う年齢・活動量（性別は設定ページの「性別」で選ぶ） */
+export default function ProfileForm({
+  profile,
+  onSave,
+}: {
+  profile: Profile;
+  onSave: (p: Pick<Profile, "age" | "activity">) => void;
+}) {
   // null = まだ触っていない（保存済みの値を初期値として表示する）
   const [age, setAge] = useState<string | null>(null);
-  const [sex, setSex] = useState<Sex | null>(null);
   const [activity, setActivity] = useState<Activity | null>(null);
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
 
   const ageValue = age ?? (profile.age !== null ? String(profile.age) : "");
-  const sexValue = sex ?? profile.sex;
   const activityValue = activity ?? profile.activity;
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -31,13 +33,12 @@ export default function ProfileForm({ profile, onSave }: { profile: Profile; onS
       setMessage({ ok: false, text: `年齢は ${MIN_AGE}〜${MAX_AGE} の整数で入力してください` });
       return;
     }
-    if (sexValue === null || activityValue === null) {
-      setMessage({ ok: false, text: "性別と活動量を選んでください" });
+    if (activityValue === null) {
+      setMessage({ ok: false, text: "活動量を選んでください" });
       return;
     }
-    onSave({ age: a, sex: sexValue, activity: activityValue });
+    onSave({ age: a, activity: activityValue });
     setAge(null);
-    setSex(null);
     setActivity(null);
     setMessage({ ok: true, text: "保存しました" });
   }
@@ -71,25 +72,6 @@ export default function ProfileForm({ profile, onSave }: { profile: Profile; onS
           className="input-soft w-full"
         />
       </div>
-
-      <fieldset className="space-y-1">
-        <legend className="text-sm font-medium">性別</legend>
-        <div className="flex gap-2">
-          {(Object.keys(SEX_LABELS) as Sex[]).map((key) => (
-            <label key={key} className={choice(sexValue === key)}>
-              <input
-                type="radio"
-                name="sex"
-                value={key}
-                checked={sexValue === key}
-                onChange={() => setSex(key)}
-                className="sr-only"
-              />
-              {SEX_LABELS[key]}
-            </label>
-          ))}
-        </div>
-      </fieldset>
 
       <fieldset className="space-y-1">
         <legend className="text-sm font-medium">ふだんの活動量</legend>

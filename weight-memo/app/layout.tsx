@@ -3,6 +3,7 @@ import { M_PLUS_Rounded_1c } from "next/font/google";
 import Link from "next/link";
 import { Suspense } from "react";
 import Mascot from "@/components/Mascot";
+import Onboarding from "@/components/Onboarding";
 import PersonaToggle from "@/components/PersonaToggle";
 import TabBar, { TabBarNav } from "@/components/TabBar";
 import "./globals.css";
@@ -54,6 +55,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Suspense fallback={<TabBarNav pathname={null} />}>
           <TabBar />
         </Suspense>
+
+        {/* 性別が未設定なら、使う前に選んでもらう */}
+        <Onboarding />
       </body>
     </html>
   );

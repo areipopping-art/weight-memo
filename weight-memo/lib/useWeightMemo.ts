@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { firstWeightSince } from "./achievements";
-import type { Profile } from "./calorie";
+import type { Profile, Sex } from "./calorie";
 import type { Persona } from "./persona";
 import { todayString } from "./date";
 import { clearPhotos, deletePhotosForDate } from "./photos";
@@ -67,9 +67,14 @@ export function useWeightMemo() {
     save({ ...getSnapshot(), goalDeadline });
   }
 
-  /** F-20 年齢・性別・活動量を保存 */
-  function setProfile(profile: Profile) {
+  /** F-20 年齢・活動量（・性別）を保存 */
+  function setProfile(profile: Partial<Profile>) {
     save({ ...getSnapshot(), ...profile });
+  }
+
+  /** 性別を保存（見た目のテーマとカロリー計算に使う） */
+  function setSex(sex: Sex) {
+    save({ ...getSnapshot(), sex });
   }
 
   /** A/B のモードを切り替える */
@@ -84,5 +89,5 @@ export function useWeightMemo() {
     clearPhotos().catch(() => console.error("[weight-memo] 写真を削除できませんでした"));
   }
 
-  return { data, setGoalWeight, saveRecord, deleteRecord, setHeight, deleteAll, setGoalDeadline, setProfile, setPersona };
+  return { data, setGoalWeight, saveRecord, deleteRecord, setHeight, deleteAll, setGoalDeadline, setProfile, setPersona, setSex };
 }
