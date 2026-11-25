@@ -26,7 +26,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
   const [meal, setMeal] = useState<string | null>(null); // 以前の1行メモ
   const [error, setError] = useState<string | null>(null);
 
-  const title = <h1 className="text-xl font-bold">記録の編集</h1>;
+  const title = <h1 className="text-xl font-extrabold text-sakura-700 dark:text-sakura-300">✏️ 記録の編集</h1>;
   if (data === null) return title;
 
   const record = data.records.find((r) => r.date === date);
@@ -34,9 +34,9 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
     return (
       <div className="space-y-6">
         {title}
-        <p className="rounded-lg bg-white p-4 text-sm text-neutral-500 shadow-sm dark:bg-neutral-800">
+        <p className="card text-sm text-muted">
           この日付の記録はありません。
-          <Link href="/history" className="font-bold text-emerald-700 underline dark:text-emerald-400">
+          <Link href="/history" className="font-bold text-sakura-700 underline dark:text-sakura-300">
             記録一覧
           </Link>
           に戻る
@@ -78,13 +78,13 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
     router.push("/history");
   }
 
-  const input = "w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-600 dark:bg-neutral-900";
+  const input = "input-soft w-full";
 
   return (
     <div className="space-y-6">
       {title}
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800">
-        <p className="text-sm text-neutral-500">日付：{formatShortDate(date)}</p>
+      <form onSubmit={handleSubmit} className="card space-y-4">
+        <p className="inline-block rounded-full bg-sakura-100 px-3 py-1 text-sm font-bold text-sakura-800 dark:bg-[#4a3542] dark:text-sakura-100">📅 {formatShortDate(date)}</p>
 
         <div className="space-y-1">
           <label htmlFor="weight" className="block text-sm font-medium">
@@ -99,7 +99,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
             max={MAX_WEIGHT}
             value={weightValue}
             onChange={(e) => setWeight(e.target.value)}
-            className={`${input} text-2xl`}
+            className={`${input} text-2xl font-bold`}
           />
         </div>
 
@@ -120,7 +120,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
         {record.meal && (
           <div className="space-y-1">
             <label htmlFor="edit-memo" className="block text-sm font-medium">
-              メモ <span className="font-normal text-neutral-500">（以前の記録）</span>
+              メモ <span className="font-normal text-muted">（以前の記録）</span>
             </label>
             <textarea
               id="edit-memo"
@@ -136,20 +136,20 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
         <div className="flex gap-2">
           <Link
             href="/history"
-            className="flex-1 rounded-md border border-neutral-300 py-3 text-center dark:border-neutral-600"
+            className="btn-soft flex-1 py-3 text-center"
           >
             やめる
           </Link>
           <button
             type="submit"
-            className="flex-1 rounded-md bg-emerald-600 py-3 font-bold text-white hover:bg-emerald-700"
+            className="btn-primary flex-1 py-3"
           >
             保存する
           </button>
         </div>
 
         {error && (
-          <p role="status" className="text-sm text-red-600">
+          <p role="status" className="text-sm font-bold text-sakura-700 dark:text-sakura-300">
             {error}
           </p>
         )}
