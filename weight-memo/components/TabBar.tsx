@@ -35,8 +35,8 @@ export function TabBarNav({ pathname, persona }: { pathname: string | null; pers
                 aria-current={active ? "page" : undefined}
                 className={`flex flex-col items-center gap-0.5 rounded-full py-1.5 text-xs transition-colors ${
                   active
-                    ? "bg-sakura-100 font-extrabold text-sakura-700 dark:bg-[#4a3542] dark:text-sakura-200"
-                    : "text-muted hover:bg-sakura-50 dark:hover:bg-[#3a2f40]"
+                    ? "bg-sakura-100 font-extrabold text-sakura-700 dark:bg-[var(--tint-sakura-strong)] dark:text-sakura-200"
+                    : "text-muted hover:bg-sakura-50 dark:hover:bg-[var(--hover)]"
                 }`}
               >
                 <span className={`text-xl transition-transform ${active ? "scale-125 animate-bounce-soft" : ""}`} aria-hidden>

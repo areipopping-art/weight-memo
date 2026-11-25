@@ -60,7 +60,7 @@ export default function PhotoFields({
           const inputId = `${idPrefix}-${key}`;
           return (
             <div key={key} className="space-y-1 text-center">
-              <div className="relative aspect-square overflow-hidden rounded-2xl border-2 border-dashed border-sakura-200 bg-sakura-50/50 dark:border-[#574a5e] dark:bg-transparent">
+              <div className="relative aspect-square overflow-hidden rounded-2xl border-2 border-dashed border-sakura-200 bg-sakura-50/50 dark:border-[var(--input-border)] dark:bg-transparent">
                 {url ? (
                   <>
                     {/* eslint-disable-next-line @next/next/no-img-element -- 端末内の画像（blob: URL）なので next/image は使わない */}
@@ -77,7 +77,7 @@ export default function PhotoFields({
                 ) : (
                   <label
                     htmlFor={inputId}
-                    className="flex h-full w-full cursor-pointer flex-col items-center justify-center text-sakura-400 hover:bg-sakura-100/60 dark:hover:bg-[#3a2f40]"
+                    className="flex h-full w-full cursor-pointer flex-col items-center justify-center text-sakura-400 hover:bg-sakura-100/60 dark:hover:bg-[var(--hover)]"
                   >
                     <span className="text-xl" aria-hidden>
                       {busy === key ? "⏳" : "📷"}

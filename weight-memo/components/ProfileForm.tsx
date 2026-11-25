@@ -46,7 +46,7 @@ export default function ProfileForm({
   const choice = (selected: boolean) =>
     `flex-1 cursor-pointer rounded-full border-2 px-3 py-2 text-center text-sm transition-colors ${
       selected
-        ? "border-sakura-400 bg-sakura-50 font-bold text-sakura-800 dark:bg-[#3a2733] dark:text-sakura-200"
+        ? "border-sakura-400 bg-sakura-50 font-bold text-sakura-800 dark:bg-[var(--tint-sakura)] dark:text-sakura-200"
         : "border-[var(--input-border)]"
     }`;
 

@@ -15,9 +15,9 @@ export default function PreviousDiff({ records }: { records: WeightRecord[] }) {
     <div
       className={`card text-sm ${
         down
-          ? "bg-mint-50 dark:bg-[#1f3330]"
+          ? "bg-mint-50 dark:bg-[var(--tint-mint)]"
           : up
-            ? "bg-sakura-50 dark:bg-[#3a2733]"
+            ? "bg-sakura-50 dark:bg-[var(--tint-sakura)]"
             : ""
       }`}
     >

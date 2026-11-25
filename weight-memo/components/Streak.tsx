@@ -7,7 +7,7 @@ export default function Streak({ records, today }: { records: WeightRecord[]; to
   const recordedToday = records.some((r) => r.date === today);
 
   return (
-    <div className="card bg-lemon-50 text-sm dark:bg-[#33301f]">
+    <div className="card bg-lemon-50 text-sm dark:bg-[var(--tint-lemon)]">
       <p className="text-xs font-bold text-muted">
         <span aria-hidden>🔥 </span>連続記録
       </p>

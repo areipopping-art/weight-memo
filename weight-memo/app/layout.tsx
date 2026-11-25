@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import Mascot from "@/components/Mascot";
 import Onboarding from "@/components/Onboarding";
+import ThemeSync from "@/components/ThemeSync";
 import PersonaToggle from "@/components/PersonaToggle";
 import TabBar, { TabBarNav } from "@/components/TabBar";
 import "./globals.css";
@@ -16,6 +17,9 @@ const rounded = M_PLUS_Rounded_1c({
   variable: "--font-m-plus-rounded",
 });
 
+/** 保存データの性別が男性なら <html data-theme="male"> にする（データは端末の外に出ない） */
+const THEME_SCRIPT = `try{var d=JSON.parse(localStorage.getItem("weight-memo")||"{}");document.documentElement.dataset.theme=d.sex==="male"?"male":"female"}catch(e){}`;
+
 export const metadata: Metadata = {
   title: "体重・食事メモ",
   description: "毎日10秒で体重と食事を記録できるメモアプリ",
@@ -23,7 +27,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ja" className={`${rounded.variable} h-full antialiased`}>
+    <html lang="ja" className={`${rounded.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        {/* 読み込み直後にピンクが一瞬見えないよう、描画前にテーマを決める */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col">
         <header className="border-b border-[var(--card-border)] bg-[var(--card)]/90 backdrop-blur">
           <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
@@ -58,6 +66,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
         {/* 性別が未設定なら、使う前に選んでもらう */}
         <Onboarding />
+        <ThemeSync />
       </body>
     </html>
   );

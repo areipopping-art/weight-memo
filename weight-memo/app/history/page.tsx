@@ -52,7 +52,7 @@ export default function HistoryPage() {
         <ul className="space-y-3">
           {records.map((r) => (
             <li key={r.date} className="card flex animate-pop-in items-start gap-3">
-              <div className="flex w-14 shrink-0 flex-col items-center rounded-2xl bg-sakura-100 py-1.5 text-sakura-800 dark:bg-[#4a3542] dark:text-sakura-100">
+              <div className="flex w-14 shrink-0 flex-col items-center rounded-2xl bg-sakura-100 py-1.5 text-sakura-800 dark:bg-[var(--tint-sakura-strong)] dark:text-sakura-100">
                 <span className="text-sm font-extrabold">{formatShortDate(r.date)}</span>
                 <span className="text-xs">{weekday(r.date)}曜</span>
               </div>
@@ -63,7 +63,7 @@ export default function HistoryPage() {
                     <span className="ml-2 text-sm font-normal text-muted">体脂肪 {formatBodyFat(r.bodyFat)}</span>
                   )}
                   {detail && totalKcal(r) !== null && (
-                    <span className="ml-2 rounded-full bg-lemon-100 px-2 py-0.5 text-xs font-bold text-lemon-800 dark:bg-[#33301f] dark:text-lemon-200">🔥 合計 {formatKcal(totalKcal(r)!)}</span>
+                    <span className="ml-2 rounded-full bg-lemon-100 px-2 py-0.5 text-xs font-bold text-lemon-800 dark:bg-[var(--tint-lemon)] dark:text-lemon-200">🔥 合計 {formatKcal(totalKcal(r)!)}</span>
                   )}
                 </p>
                 <MealList record={r} showKcal={detail} />
@@ -94,7 +94,7 @@ export default function HistoryPage() {
                   <Link
                     href={`/history/${r.date}`}
                     aria-label={`${formatShortDate(r.date)} の記録を編集`}
-                    className="rounded-full bg-mint-100 px-3 py-1 text-xs font-bold text-mint-800 hover:bg-mint-200 dark:bg-[#1f3330] dark:text-mint-200"
+                    className="rounded-full bg-mint-100 px-3 py-1 text-xs font-bold text-mint-800 hover:bg-mint-200 dark:bg-[var(--tint-mint)] dark:text-mint-200"
                   >
                     編集
                   </Link>
@@ -102,7 +102,7 @@ export default function HistoryPage() {
                     type="button"
                     onClick={() => setConfirming(r.date)}
                     aria-label={`${formatShortDate(r.date)} の記録を削除`}
-                    className="rounded-full px-3 py-1 text-xs text-muted hover:bg-sakura-50 hover:text-sakura-700 dark:hover:bg-[#3a2f40]"
+                    className="rounded-full px-3 py-1 text-xs text-muted hover:bg-sakura-50 hover:text-sakura-700 dark:hover:bg-[var(--hover)]"
                   >
                     削除
                   </button>

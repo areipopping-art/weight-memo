@@ -39,7 +39,7 @@ export default function MealWeightTable({ records }: { records: WeightRecord[] }
                 {diff > 0 ? `+${diff.toFixed(1)}` : diff < 0 ? `−${(-diff).toFixed(1)}` : "±0.0"}
               </span>
             )}
-            {kcal !== null && <span className="ml-auto rounded-full bg-mint-100 px-2 py-0.5 text-xs font-bold text-mint-800 dark:bg-[#1f3330] dark:text-mint-200">{formatKcal(kcal)}</span>}
+            {kcal !== null && <span className="ml-auto rounded-full bg-mint-100 px-2 py-0.5 text-xs font-bold text-mint-800 dark:bg-[var(--tint-mint)] dark:text-mint-200">{formatKcal(kcal)}</span>}
           </div>
           {mealText && <p className="mt-1 ml-15 break-words text-xs text-muted">{mealText}</p>}
         </li>

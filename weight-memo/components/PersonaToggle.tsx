@@ -42,7 +42,7 @@ export default function PersonaToggle() {
                   ? p.key === "A"
                     ? "bg-sakura-400 text-white"
                     : "bg-mint-500 text-white"
-                  : "text-muted hover:bg-sakura-50 dark:hover:bg-[#3a2f40]"
+                  : "text-muted hover:bg-sakura-50 dark:hover:bg-[var(--hover)]"
               }`}
             >
               <span aria-hidden>{p.emoji}</span> {p.key}

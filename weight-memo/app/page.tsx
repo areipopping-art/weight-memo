@@ -111,7 +111,7 @@ export default function Home() {
       <h1 className="sr-only">今日の記録</h1>
 
       {todayRecord && (
-        <p className="rounded-full border-2 border-mint-200 bg-mint-50 px-4 py-2 text-mint-800 dark:border-mint-800 dark:bg-[#1f3330] dark:text-mint-200">
+        <p className="rounded-full border-2 border-mint-200 bg-mint-50 px-4 py-2 text-mint-800 dark:border-mint-800 dark:bg-[var(--tint-mint)] dark:text-mint-200">
           <span className="font-bold">✅ 今日は記録済み</span>
           <span className="ml-2 text-sm">{formatKg(todayRecord.weight)}</span>
           {detail && todayRecord.bodyFat != null && <span className="ml-2 text-sm">・体脂肪率 {formatBodyFat(todayRecord.bodyFat)}</span>}

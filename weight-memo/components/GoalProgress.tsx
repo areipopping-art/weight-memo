@@ -34,7 +34,7 @@ export default function GoalProgress({ data }: { data: Data }) {
   const progress = remaining <= 0 ? 1 : total > 0 ? Math.min(1, Math.max(0, (start - latest.weight) / total)) : 0;
 
   return (
-    <div className="card bg-gradient-to-br from-sakura-50 to-white dark:from-[#3a2733] dark:to-[var(--card)]">
+    <div className="card bg-gradient-to-br from-sakura-50 to-white dark:from-[var(--tint-sakura)] dark:to-[var(--card)]">
       {remaining > 0 ? (
         <p className="font-bold">
           <span aria-hidden>🎯 </span>目標まであと{" "}
@@ -51,7 +51,7 @@ export default function GoalProgress({ data }: { data: Data }) {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(progress * 100)}
-        className="mt-3 h-3 overflow-hidden rounded-full bg-sakura-100 dark:bg-[#4a3542]"
+        className="mt-3 h-3 overflow-hidden rounded-full bg-sakura-100 dark:bg-[var(--tint-sakura-strong)]"
       >
         <div
           className="h-full rounded-full bg-gradient-to-r from-sakura-300 to-sakura-500 transition-[width] duration-700"

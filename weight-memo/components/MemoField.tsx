@@ -53,7 +53,7 @@ export default function MemoField({
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => onChange(text)}
-              className="animate-pop-in rounded-full border border-sakura-200 bg-sakura-50 px-3 py-1 text-xs font-bold text-sakura-800 hover:bg-sakura-100 dark:border-sakura-800 dark:bg-[#3a2733] dark:text-sakura-200"
+              className="animate-pop-in rounded-full border border-sakura-200 bg-sakura-50 px-3 py-1 text-xs font-bold text-sakura-800 hover:bg-sakura-100 dark:border-sakura-800 dark:bg-[var(--tint-sakura)] dark:text-sakura-200"
             >
               {text}
             </button>

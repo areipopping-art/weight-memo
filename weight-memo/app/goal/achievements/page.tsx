@@ -40,7 +40,7 @@ export default function AchievementsPage() {
         </Link>
       </div>
 
-      <section className={`${box} bg-lavender-50 dark:bg-[#2f2845]`}>
+      <section className={`${box} bg-lavender-50 dark:bg-[var(--tint-lavender)]`}>
         <div className="flex items-center justify-between">
           <h2 className="font-extrabold text-lavender-800 dark:text-lavender-200">✨ 次の目標の提案</h2>
           <Mascot mood={proposal?.kind === "goal" ? "cheer" : "happy"} size={56} className="-my-2" />

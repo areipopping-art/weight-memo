@@ -37,13 +37,13 @@ export default function GoalPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-extrabold text-sakura-700 dark:text-sakura-300">🎯 目標設定</h1>
-        <Link href="/goal/achievements" className="rounded-full bg-lavender-100 px-3 py-1.5 text-sm font-bold text-lavender-800 hover:bg-lavender-200 dark:bg-[#2f2845] dark:text-lavender-200">
+        <Link href="/goal/achievements" className="rounded-full bg-lavender-100 px-3 py-1.5 text-sm font-bold text-lavender-800 hover:bg-lavender-200 dark:bg-[var(--tint-lavender)] dark:text-lavender-200">
           🏆 達成記録
         </Link>
       </div>
 
       {hasGoal && (
-        <p className="card bg-gradient-to-br from-sakura-50 to-white font-bold dark:from-[#3a2733] dark:to-[var(--card)]">
+        <p className="card bg-gradient-to-br from-sakura-50 to-white font-bold dark:from-[var(--tint-sakura)] dark:to-[var(--card)]">
           <span aria-hidden>🌸 </span>現在の目標：<span className="text-2xl font-extrabold text-sakura-600 dark:text-sakura-300">{formatKg(data.goalWeight!)}</span>
         </p>
       )}

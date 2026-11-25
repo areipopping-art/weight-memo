@@ -43,13 +43,13 @@ export default function CalorieTargetCard({ data, today }: { data: Data; today: 
   const cut = t.tdee - t.target;
 
   return (
-    <div className={`${box} bg-lemon-50 dark:bg-[#33301f]`}>
+    <div className={`${box} bg-lemon-50 dark:bg-[var(--tint-lemon)]`}>
       <p>
         <span aria-hidden>🍽️ </span>1日の目安{" "}
         <span className="text-2xl font-extrabold text-lemon-800 dark:text-lemon-200">{formatKcal(t.target)}</span>
       </p>
       <p className="mt-1 text-xs text-muted">{paceNote}</p>
-      <dl className="mt-3 grid grid-cols-3 gap-2 border-t border-lemon-200 pt-3 dark:border-[#4a4530] text-center text-xs ">
+      <dl className="mt-3 grid grid-cols-3 gap-2 border-t border-lemon-200 pt-3 dark:border-[var(--tint-lemon-line)] text-center text-xs ">
         <div>
           <dt className="text-muted">基礎代謝</dt>
           <dd className="font-bold">{formatKcal(t.bmr)}</dd>

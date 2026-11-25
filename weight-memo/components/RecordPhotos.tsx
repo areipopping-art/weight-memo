@@ -14,7 +14,7 @@ export default function RecordPhotos({ date }: { date: string }) {
       {keys.map((k) => (
         <figure key={k} className="w-14">
           {/* eslint-disable-next-line @next/next/no-img-element -- 端末内の画像（blob: URL）なので next/image は使わない */}
-          <img src={photos[k]} alt={`${MEAL_LABELS[k]}の写真`} className="aspect-square w-14 rounded-xl border-2 border-white object-cover shadow-sm dark:border-[#3d3343]" />
+          <img src={photos[k]} alt={`${MEAL_LABELS[k]}の写真`} className="aspect-square w-14 rounded-xl border-2 border-white object-cover shadow-sm dark:border-[var(--card-border)]" />
           <figcaption className="text-center text-[10px] text-muted">{MEAL_LABELS[k]}</figcaption>
         </figure>
       ))}

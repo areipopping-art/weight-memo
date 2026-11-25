@@ -87,7 +87,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
     <div className="space-y-6">
       {title}
       <form onSubmit={handleSubmit} className="card space-y-4">
-        <p className="inline-block rounded-full bg-sakura-100 px-3 py-1 text-sm font-bold text-sakura-800 dark:bg-[#4a3542] dark:text-sakura-100">📅 {formatShortDate(date)}</p>
+        <p className="inline-block rounded-full bg-sakura-100 px-3 py-1 text-sm font-bold text-sakura-800 dark:bg-[var(--tint-sakura-strong)] dark:text-sakura-100">📅 {formatShortDate(date)}</p>
 
         <div className="space-y-1">
           <label htmlFor="weight" className="block text-sm font-medium">

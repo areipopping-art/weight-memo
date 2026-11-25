@@ -16,6 +16,86 @@
   --input: #ffffff;
   --input-border: #ffc8da;
   --dot: rgb(255 163 192 / 0.18); /* 背景の水玉 */
+  --pattern: radial-gradient(var(--dot) 2px, transparent 2.5px); /* 背景の模様 */
+  --pattern-size: 22px 22px;
+  --app-font: var(--font-m-plus-rounded), "Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP", sans-serif;
+  --radius-card: 1.25rem;
+  --radius-btn: 9999px;
+  --chart-muted: #a08a96;
+  /* ダークモードの色つき背景（dark: のクラスで使う） */
+  --tint-sakura: #3a2733;
+  --tint-sakura-strong: #4a3542;
+  --tint-mint: #1f3330;
+  --tint-lemon: #33301f;
+  --tint-lemon-line: #4a4530;
+  --tint-lavender: #2f2845;
+  --hover: #3a2f40;
+}
+
+/*
+ * 男性テーマ：青い背景・クールな雰囲気
+ * 色クラス（sakura / mint / lavender / lemon）の中身を、青・シアン・インディゴ・オレンジに差し替える
+ */
+:root[data-theme="male"] {
+  --background: #dde9f8;
+  --foreground: #0f1e36;
+  --muted: #4f617c;
+  --card: #ffffff;
+  --card-border: #c4d5ee;
+  --card-shadow: 0 2px 0 #c4d5ee, 0 10px 24px -14px rgb(30 64 175 / 0.4);
+  --input: #ffffff;
+  --input-border: #a9c0e4;
+  --dot: rgb(37 99 235 / 0.07);
+  --pattern: repeating-linear-gradient(135deg, var(--dot) 0 2px, transparent 2px 14px); /* 斜めストライプ */
+  --pattern-size: auto;
+  --app-font: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  --radius-card: 0.75rem;
+  --radius-btn: 0.6rem;
+  --chart-muted: #6b7f9e;
+
+  --color-sakura-50: #eff6ff;
+  --color-sakura-100: #dbeafe;
+  --color-sakura-200: #bfdbfe;
+  --color-sakura-300: #93c5fd;
+  --color-sakura-400: #60a5fa;
+  --color-sakura-500: #2563eb;
+  --color-sakura-600: #1d4ed8;
+  --color-sakura-700: #1e40af;
+  --color-sakura-800: #1e3a8a;
+  --color-sakura-900: #172554;
+
+  --color-mint-50: #ecfeff;
+  --color-mint-100: #cffafe;
+  --color-mint-200: #a5f3fc;
+  --color-mint-300: #67e8f9;
+  --color-mint-400: #22d3ee;
+  --color-mint-500: #06b6d4;
+  --color-mint-600: #0891b2;
+  --color-mint-700: #0e7490;
+  --color-mint-800: #155e75;
+  --color-mint-900: #164e63;
+
+  --color-lavender-50: #eef2ff;
+  --color-lavender-100: #e0e7ff;
+  --color-lavender-200: #c7d2fe;
+  --color-lavender-300: #a5b4fc;
+  --color-lavender-400: #818cf8;
+  --color-lavender-500: #6366f1;
+  --color-lavender-600: #4f46e5;
+  --color-lavender-700: #4338ca;
+  --color-lavender-800: #3730a3;
+  --color-lavender-900: #312e81;
+
+  --color-lemon-50: #fff7ed;
+  --color-lemon-100: #ffedd5;
+  --color-lemon-200: #fed7aa;
+  --color-lemon-300: #fdba74;
+  --color-lemon-400: #fb923c;
+  --color-lemon-500: #f97316;
+  --color-lemon-600: #ea580c;
+  --color-lemon-700: #c2410c;
+  --color-lemon-800: #9a3412;
+  --color-lemon-900: #7c2d12;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -29,6 +109,26 @@
     --input: #241e29;
     --input-border: #574a5e;
     --dot: rgb(255 163 192 / 0.06);
+  }
+
+  :root[data-theme="male"] {
+    --background: #0b1324;
+    --foreground: #e3ecfa;
+    --muted: #93a5c4;
+    --card: #121d33;
+    --card-border: #22314f;
+    --card-shadow: 0 2px 0 #22314f, 0 10px 24px -14px rgb(0 0 0 / 0.7);
+    --input: #0e182c;
+    --input-border: #2d4170;
+    --dot: rgb(96 165 250 / 0.06);
+    --chart-muted: #8195b8;
+    --tint-sakura: #16264a;
+    --tint-sakura-strong: #1e3360;
+    --tint-mint: #0f2a33;
+    --tint-lemon: #2d2112;
+    --tint-lemon-line: #4a3520;
+    --tint-lavender: #1c1f45;
+    --hover: #1a2a4a;
   }
 }
 
@@ -129,24 +229,24 @@
 body {
   background-color: var(--background);
   /* うすい水玉 */
-  background-image: radial-gradient(var(--dot) 2px, transparent 2.5px);
-  background-size: 22px 22px;
+  background-image: var(--pattern);
+  background-size: var(--pattern-size);
   color: var(--foreground);
-  font-family: var(--font-m-plus-rounded), "Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP", sans-serif;
+  font-family: var(--app-font);
 }
 
 /* カード：白・大きめの角丸・ピンクのやわらかい影 */
 @utility card {
   background-color: var(--card);
   border: 1px solid var(--card-border);
-  border-radius: 1.25rem;
+  border-radius: var(--radius-card);
   box-shadow: var(--card-shadow);
   padding: 1rem;
 }
 
 /* 主役のボタン（ピンク） */
 @utility btn-primary {
-  border-radius: 9999px;
+  border-radius: var(--radius-btn);
   background-color: var(--color-sakura-500);
   color: #fff;
   font-weight: 700;
@@ -170,7 +270,7 @@ body {
 
 /* ひかえめなボタン（枠だけ） */
 @utility btn-soft {
-  border-radius: 9999px;
+  border-radius: var(--radius-btn);
   border: 1.5px solid var(--input-border);
   background-color: var(--input);
   transition: background-color 0.15s;
@@ -179,7 +279,7 @@ body {
   }
   @media (prefers-color-scheme: dark) {
     &:hover {
-      background-color: #3a2f40;
+      background-color: var(--hover);
     }
   }
 }

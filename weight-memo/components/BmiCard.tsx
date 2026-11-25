@@ -26,7 +26,7 @@ export default function BmiCard({ data }: { data: Data }) {
   const goalBmi = data.goalWeight !== null ? calcBmi(data.goalWeight, data.height) : null;
 
   return (
-    <div className={`${box} bg-mint-50 dark:bg-[#1f3330]`}>
+    <div className={`${box} bg-mint-50 dark:bg-[var(--tint-mint)]`}>
       <p>
         <span aria-hidden>💪 </span>現在の BMI <span className="text-2xl font-extrabold text-mint-700 dark:text-mint-300">{bmi.toFixed(1)}</span>
         <span className="ml-2 text-sm text-muted">（{bmiCategory(bmi)}）</span>

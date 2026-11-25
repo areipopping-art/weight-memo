@@ -85,7 +85,7 @@ export default function SettingsPage() {
               type="button"
               disabled={!data || data.records.length === 0}
               onClick={() => data && downloadCsv(recordsToCsv(data.records), `weight-memo-${todayString()}.csv`)}
-              className="w-full rounded-full border-2 border-mint-300 bg-mint-50 py-2 text-sm font-bold text-mint-800 hover:bg-mint-100 disabled:opacity-50 dark:border-mint-800 dark:bg-[#1f3330] dark:text-mint-200"
+              className="w-full rounded-full border-2 border-mint-300 bg-mint-50 py-2 text-sm font-bold text-mint-800 hover:bg-mint-100 disabled:opacity-50 dark:border-mint-800 dark:bg-[var(--tint-mint)] dark:text-mint-200"
             >
               CSV をダウンロード{data ? `（${data.records.length}件）` : ""}
             </button>
@@ -128,7 +128,7 @@ export default function SettingsPage() {
               setConfirming(true);
               setDeleted(false);
             }}
-            className="w-full rounded-full border-2 border-sakura-200 py-2 text-sm font-bold text-sakura-700 hover:bg-sakura-50 dark:border-sakura-900 dark:text-sakura-300 dark:hover:bg-[#3a2733]"
+            className="w-full rounded-full border-2 border-sakura-200 py-2 text-sm font-bold text-sakura-700 hover:bg-sakura-50 dark:border-sakura-900 dark:text-sakura-300 dark:hover:bg-[var(--tint-sakura)]"
           >
             すべて削除する
           </button>

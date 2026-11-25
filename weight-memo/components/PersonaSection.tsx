@@ -16,8 +16,8 @@ export default function PersonaSection({ value, onChange }: { value: Persona; on
             key={p.key}
             className={`block cursor-pointer rounded-2xl border-2 p-3 transition-colors ${
               active
-                ? "border-sakura-400 bg-sakura-50 dark:bg-[#3a2733]"
-                : "border-[var(--input-border)] hover:bg-sakura-50/60 dark:hover:bg-[#3a2f40]"
+                ? "border-sakura-400 bg-sakura-50 dark:bg-[var(--tint-sakura)]"
+                : "border-[var(--input-border)] hover:bg-sakura-50/60 dark:hover:bg-[var(--hover)]"
             }`}
           >
             <input
