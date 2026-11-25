@@ -6,9 +6,9 @@ import { formatKcal, totalKcal } from "@/lib/meals";
 import type { WeightRecord } from "@/lib/storage";
 import { formatKg } from "@/lib/weight";
 
-const LINE = "#059669"; // emerald-600
-const BAR = "#f59e0b"; // amber-500
-const MUTED = "#737373"; // neutral-500
+const LINE = "#f25588"; // sakura-500
+const BAR = "#3fcd9f"; // mint-400
+const MUTED = "#a08a96"; // ライト・ダーク両方で読める中間の色
 
 /** F-24 体重（折れ線）と1日の合計カロリー（棒）を並べて表示する */
 export default function MealWeightChart({ records }: { records: WeightRecord[] }) {

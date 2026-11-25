@@ -20,28 +20,28 @@ export default function MealWeightTable({ records }: { records: WeightRecord[] }
     .reverse();
 
   return (
-    <ul className="divide-y divide-neutral-200 dark:divide-neutral-700">
+    <ul className="divide-y divide-[var(--card-border)]">
       {rows.map(({ record, diff, kcal, mealText }) => (
         <li key={record.date} className="py-3 text-sm">
           <div className="flex items-baseline gap-3">
-            <span className="w-12 shrink-0 text-neutral-500">{formatShortDate(record.date)}</span>
+            <span className="w-12 shrink-0 text-muted">{formatShortDate(record.date)}</span>
             <span className="font-bold">{formatKg(record.weight)}</span>
             {diff !== null && (
               <span
                 className={
                   diff > 0
-                    ? "text-red-600 dark:text-red-400"
+                    ? "font-bold text-sakura-700 dark:text-sakura-300"
                     : diff < 0
-                      ? "text-emerald-700 dark:text-emerald-400"
-                      : "text-neutral-500"
+                      ? "font-bold text-mint-700 dark:text-mint-300"
+                      : "text-muted"
                 }
               >
                 {diff > 0 ? `+${diff.toFixed(1)}` : diff < 0 ? `−${(-diff).toFixed(1)}` : "±0.0"}
               </span>
             )}
-            {kcal !== null && <span className="ml-auto text-xs text-neutral-500">{formatKcal(kcal)}</span>}
+            {kcal !== null && <span className="ml-auto rounded-full bg-mint-100 px-2 py-0.5 text-xs font-bold text-mint-800 dark:bg-[#1f3330] dark:text-mint-200">{formatKcal(kcal)}</span>}
           </div>
-          {mealText && <p className="mt-1 ml-15 break-words text-xs text-neutral-600 dark:text-neutral-300">{mealText}</p>}
+          {mealText && <p className="mt-1 ml-15 break-words text-xs text-muted">{mealText}</p>}
         </li>
       ))}
     </ul>

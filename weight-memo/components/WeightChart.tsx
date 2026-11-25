@@ -5,9 +5,9 @@ import { formatShortDate } from "@/lib/date";
 import type { WeightRecord } from "@/lib/storage";
 import { formatKg } from "@/lib/weight";
 
-const LINE = "#059669"; // emerald-600
-const GOAL = "#ea580c"; // orange-600
-const MUTED = "#737373"; // neutral-500（ライト・ダーク両方で読める）
+const LINE = "#f25588"; // sakura-500
+const GOAL = "#8b62f1"; // lavender-500
+const MUTED = "#a08a96"; // ライト・ダーク両方で読める中間の色
 
 /** F-17 体重の折れ線グラフ。目標体重があれば横線を引く */
 export default function WeightChart({ records, goalWeight }: { records: WeightRecord[]; goalWeight: number | null }) {
