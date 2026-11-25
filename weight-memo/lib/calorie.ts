@@ -1,5 +1,8 @@
 // F-20 目標カロリーの自動計算
 
+import type { Data } from "./storage";
+import { goalPace, sortNewestFirst } from "./stats";
+
 export type Sex = "male" | "female";
 export type Activity = "low" | "normal" | "high";
 
@@ -75,4 +78,47 @@ export function calcCalorieTarget(input: {
     target: round10(Math.max(raw, bmr)),
     cappedAtBmr: raw < bmr,
   };
+}
+
+/** 最新の体重・目標・期限から減らすペースを決めて、1日の目安を計算する */
+export type CalorieTargetResult =
+  | { kind: "missingProfile" } // 身長・年齢・性別・活動量のどれかがない
+  | { kind: "missingWeight" } // 体重の記録がない
+  | { kind: "ok"; target: CalorieTarget; paceNote: string };
+
+export function calorieTargetFor(data: Data, today: string): CalorieTargetResult {
+  const { height, age, sex, activity, goalWeight } = data;
+  if (height === null || age === null || sex === null || activity === null) return { kind: "missingProfile" };
+  const latest = sortNewestFirst(data.records)[0];
+  if (!latest) return { kind: "missingWeight" };
+
+  // 減らすペース：目標達成済み・目標なしなら 0（体重を保つ）、期限があればそのペース、なければ週 0.5kg
+  let perWeekKg = 0;
+  let paceNote = "体重を保つ目安";
+  if (goalWeight !== null && latest.weight > goalWeight) {
+    const pace = data.goalDeadline ? goalPace(latest.weight, goalWeight, data.goalDeadline, today) : null;
+    if (pace?.kind === "pace") {
+      perWeekKg = pace.perWeekKg;
+      paceNote = `期限までのペース（週 ${perWeekKg.toFixed(2)}kg）`;
+    } else {
+      perWeekKg = DEFAULT_PER_WEEK_KG;
+      paceNote = `無理のないペース（週 ${DEFAULT_PER_WEEK_KG}kg）`;
+    }
+  }
+  const target = calcCalorieTarget({ weightKg: latest.weight, heightCm: height, age, sex, activity, perWeekKg });
+  return { kind: "ok", target, paceNote };
+}
+
+// F-31 自分で決める1日の目標カロリー
+
+export const MIN_KCAL_TARGET = 800;
+export const MAX_KCAL_TARGET = 5000;
+
+/** 目標カロリーの入力を整数に変換。範囲外・数字でなければ null */
+export function parseKcalTarget(input: string): number | null {
+  const s = input.trim();
+  if (s === "") return null;
+  const n = Number(s);
+  if (!Number.isFinite(n) || n < MIN_KCAL_TARGET || n > MAX_KCAL_TARGET) return null;
+  return Math.round(n);
 }

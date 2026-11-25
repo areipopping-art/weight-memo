@@ -23,6 +23,7 @@ export type Data = Profile & {
   goalStartWeight: number | null; // F-26 目標を決めたときの体重（記録が無ければ null）
   achievements: Achievement[]; // F-26 達成記録（古い順）
   persona: Persona; // A ゆるっと / B しっかり（無ければ B）
+  kcalTarget: number | null; // F-31 自分で決めた1日の目標カロリー
   records: WeightRecord[];
 };
 
@@ -38,6 +39,7 @@ export const EMPTY: Data = {
   goalStartWeight: null,
   achievements: [],
   persona: "B",
+  kcalTarget: null,
   records: [],
 };
 
@@ -65,6 +67,7 @@ function parse(raw: string | null): Data {
       goalStartWeight: typeof d.goalStartWeight === "number" ? d.goalStartWeight : null,
       achievements: Array.isArray(d.achievements) ? d.achievements : [],
       persona: d.persona === "A" ? "A" : "B",
+      kcalTarget: typeof d.kcalTarget === "number" ? d.kcalTarget : null,
       records: Array.isArray(d.records) ? d.records : [],
     };
   } catch {

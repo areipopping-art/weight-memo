@@ -1,16 +1,14 @@
 import Link from "next/link";
-import { DEFAULT_PER_WEEK_KG, calcCalorieTarget } from "@/lib/calorie";
+import { calorieTargetFor } from "@/lib/calorie";
 import { formatKcal } from "@/lib/meals";
 import type { Data } from "@/lib/storage";
-import { goalPace, sortNewestFirst } from "@/lib/stats";
 
 /** F-20 身長・体重・目標から1日の目安カロリーを表示する */
 export default function CalorieTargetCard({ data, today }: { data: Data; today: string }) {
   const box = "card";
-  const latest = sortNewestFirst(data.records)[0];
-  const { height, age, sex, activity, goalWeight } = data;
+  const result = calorieTargetFor(data, today);
 
-  if (height === null || age === null || sex === null || activity === null) {
+  if (result.kind === "missingProfile") {
     return (
       <p className={`${box} text-sm`}>
         <Link href="/settings" className="font-bold text-sakura-700 underline dark:text-sakura-300">
@@ -20,25 +18,11 @@ export default function CalorieTargetCard({ data, today }: { data: Data; today: 
       </p>
     );
   }
-  if (!latest) {
+  if (result.kind === "missingWeight") {
     return <p className={`${box} text-sm text-muted`}>体重を記録すると、1日の目安カロリーが表示されます。</p>;
   }
 
-  // 減らすペース：目標達成済み・目標なしなら 0（体重を保つ）、期限があればそのペース、なければ週 0.5kg
-  let perWeekKg = 0;
-  let paceNote = "体重を保つ目安";
-  if (goalWeight !== null && latest.weight > goalWeight) {
-    const pace = data.goalDeadline ? goalPace(latest.weight, goalWeight, data.goalDeadline, today) : null;
-    if (pace?.kind === "pace") {
-      perWeekKg = pace.perWeekKg;
-      paceNote = `期限までのペース（週 ${perWeekKg.toFixed(2)}kg）`;
-    } else {
-      perWeekKg = DEFAULT_PER_WEEK_KG;
-      paceNote = `無理のないペース（週 ${DEFAULT_PER_WEEK_KG}kg）`;
-    }
-  }
-
-  const t = calcCalorieTarget({ weightKg: latest.weight, heightCm: height, age, sex, activity, perWeekKg });
+  const { target: t, paceNote } = result;
   // 実際に減らす分（基礎代謝で止めたときは計算上の分より少ない）
   const cut = t.tdee - t.target;
 

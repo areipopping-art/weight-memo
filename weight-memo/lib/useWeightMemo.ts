@@ -77,6 +77,11 @@ export function useWeightMemo() {
     save({ ...getSnapshot(), sex });
   }
 
+  /** F-31 1日の目標カロリーを保存（null で解除） */
+  function setKcalTarget(kcalTarget: number | null) {
+    save({ ...getSnapshot(), kcalTarget });
+  }
+
   /** A/B のモードを切り替える */
   function setPersona(persona: Persona) {
     save({ ...getSnapshot(), persona });
@@ -89,5 +94,5 @@ export function useWeightMemo() {
     clearPhotos().catch(() => console.error("[weight-memo] 写真を削除できませんでした"));
   }
 
-  return { data, setGoalWeight, saveRecord, deleteRecord, setHeight, deleteAll, setGoalDeadline, setProfile, setPersona, setSex };
+  return { data, setGoalWeight, saveRecord, deleteRecord, setHeight, deleteAll, setGoalDeadline, setProfile, setPersona, setSex, setKcalTarget };
 }

@@ -5,6 +5,7 @@ import { useState } from "react";
 import BmiCard from "@/components/BmiCard";
 import CalorieTargetCard from "@/components/CalorieTargetCard";
 import DeadlineSection from "@/components/DeadlineSection";
+import KcalTargetSection from "@/components/KcalTargetSection";
 import { todayString } from "@/lib/date";
 import { showsDetail } from "@/lib/persona";
 import { themeCopy } from "@/lib/theme";
@@ -12,7 +13,7 @@ import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_WEIGHT, MIN_WEIGHT, formatKg, parseWeight } from "@/lib/weight";
 
 export default function GoalPage() {
-  const { data, setGoalWeight, setGoalDeadline } = useWeightMemo();
+  const { data, setGoalWeight, setGoalDeadline, setKcalTarget } = useWeightMemo();
   // null = まだ触っていない（現在の目標を初期値として表示する）
   const [input, setInput] = useState<string | null>(null);
   const hasGoal = data?.goalWeight != null;
@@ -83,6 +84,7 @@ export default function GoalPage() {
         <>
           <DeadlineSection data={data} onSave={setGoalDeadline} />
           <BmiCard data={data} />
+          <KcalTargetSection data={data} today={todayString()} onSave={setKcalTarget} />
           <CalorieTargetCard data={data} today={todayString()} />
         </>
       )}
