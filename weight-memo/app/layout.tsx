@@ -6,7 +6,7 @@ import Mascot from "@/components/Mascot";
 import Onboarding from "@/components/Onboarding";
 import ThemeSync from "@/components/ThemeSync";
 import PersonaToggle from "@/components/PersonaToggle";
-import TabBar, { TabBarNav } from "@/components/TabBar";
+import TabBar, { HeaderNav, HeaderNavLinks, TabBarNav } from "@/components/TabBar";
 import "./globals.css";
 
 // 丸ゴシック（日本語は文字数が多いため、先読みはせず表示しながら読み込む）
@@ -34,11 +34,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-full flex flex-col">
         <header className="border-b border-[var(--card-border)] bg-[var(--card)]/90 backdrop-blur">
-          <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
+          <div className="mx-auto flex max-w-md items-center justify-between gap-4 px-4 py-3 md:max-w-3xl md:px-6 lg:max-w-6xl lg:px-8">
             <Link href="/" className="flex items-center gap-1.5 text-lg font-extrabold text-sakura-700 dark:text-sakura-300">
               <Mascot mood="happy" size={34} />
               体重・食事メモ
             </Link>
+            {/* PC はメニューをヘッダーに出す（スマホ・タブレットは下のバー） */}
+            <Suspense fallback={<HeaderNavLinks pathname={null} />}>
+              <HeaderNav />
+            </Suspense>
             <div className="flex items-center gap-2">
               <PersonaToggle />
               <Link
@@ -52,7 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-md flex-1 px-4 pt-4 pb-28">
+        <main className="mx-auto w-full max-w-md flex-1 px-4 pt-4 pb-28 md:max-w-3xl md:px-6 md:pt-6 lg:max-w-6xl lg:px-8 lg:pb-10">
           {children}
           <p className="mt-10 text-center text-xs text-muted">
             記録はこの端末のブラウザにだけ保存されます。共有のパソコンでは他の人にも見えるのでご注意ください。
