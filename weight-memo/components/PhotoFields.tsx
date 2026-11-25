@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { MEAL_KEYS, MEAL_LABELS, type MealKey } from "@/lib/meals";
+import { MEAL_EMOJI, MEAL_KEYS, MEAL_LABELS, type MealKey } from "@/lib/meals";
 import { resizeImage, type PhotoChanges } from "@/lib/photos";
 import { usePhotos } from "@/lib/usePhotos";
 
@@ -51,7 +51,7 @@ export default function PhotoFields({
   return (
     <fieldset className="space-y-1">
       <legend className="mb-1 text-sm font-medium">
-        食事の写真 <span className="font-normal text-neutral-500">（任意）</span>
+        食事の写真 <span className="font-normal text-muted">（任意）</span>
       </legend>
       <div className="grid grid-cols-4 gap-2">
         {MEAL_KEYS.map((key) => {
@@ -60,7 +60,7 @@ export default function PhotoFields({
           const inputId = `${idPrefix}-${key}`;
           return (
             <div key={key} className="space-y-1 text-center">
-              <div className="relative aspect-square overflow-hidden rounded-md border border-dashed border-neutral-300 dark:border-neutral-600">
+              <div className="relative aspect-square overflow-hidden rounded-2xl border-2 border-dashed border-sakura-200 bg-sakura-50/50 dark:border-[#574a5e] dark:bg-transparent">
                 {url ? (
                   <>
                     {/* eslint-disable-next-line @next/next/no-img-element -- 端末内の画像（blob: URL）なので next/image は使わない */}
@@ -77,7 +77,7 @@ export default function PhotoFields({
                 ) : (
                   <label
                     htmlFor={inputId}
-                    className="flex h-full w-full cursor-pointer flex-col items-center justify-center text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-900"
+                    className="flex h-full w-full cursor-pointer flex-col items-center justify-center text-sakura-400 hover:bg-sakura-100/60 dark:hover:bg-[#3a2f40]"
                   >
                     <span className="text-xl" aria-hidden>
                       {busy === key ? "⏳" : "📷"}
@@ -96,12 +96,15 @@ export default function PhotoFields({
                   }}
                 />
               </div>
-              <span className="text-xs text-neutral-600 dark:text-neutral-300">{MEAL_LABELS[key]}</span>
+              <span className="text-xs font-bold">
+                <span aria-hidden>{MEAL_EMOJI[key]} </span>
+                {MEAL_LABELS[key]}
+              </span>
             </div>
           );
         })}
       </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm font-bold text-sakura-700 dark:text-sakura-300">{error}</p>}
     </fieldset>
   );
 }

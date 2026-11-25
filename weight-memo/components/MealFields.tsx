@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   MAX_KCAL,
   MEAL_KEYS,
+  MEAL_EMOJI,
   MEAL_LABELS,
   frequentMeals,
   type KcalInput,
@@ -43,12 +44,12 @@ export default function MealFields({
 }) {
   // 候補を表示している区分（その行の入力欄にフォーカスがある間）
   const [active, setActive] = useState<MealKey | null>(null);
-  const input = "rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-600 dark:bg-neutral-900";
+  const input = "input-soft";
 
   return (
     <fieldset className="space-y-2">
       <legend className="mb-1 text-sm font-medium">
-        食事メモ・カロリー <span className="font-normal text-neutral-500">（どちらも任意）</span>
+        食事メモ・カロリー <span className="font-normal text-muted">（どちらも任意）</span>
       </legend>
       {MEAL_KEYS.map((key) => {
         const frequent = active === key ? frequentMeals(records, key, SUGGESTION_LIMIT + 1) : [];
@@ -70,8 +71,9 @@ export default function MealFields({
             <div className="flex items-center gap-2">
               <label
                 htmlFor={`${idPrefix}-${key}`}
-                className="w-10 shrink-0 text-sm text-neutral-600 dark:text-neutral-300"
+                className="w-14 shrink-0 text-sm font-bold"
               >
+                <span aria-hidden>{MEAL_EMOJI[key]} </span>
                 {MEAL_LABELS[key]}
               </label>
               <input
@@ -100,7 +102,7 @@ export default function MealFields({
             </div>
 
             {suggestions.length > 0 && (
-              <div className="mt-1.5 ml-12 flex flex-wrap gap-1.5" aria-label={`${MEAL_LABELS[key]}のよく食べるもの`}>
+              <div className="mt-1.5 ml-16 flex flex-wrap gap-1.5" aria-label={`${MEAL_LABELS[key]}のよく食べるもの`}>
                 {suggestions.map((s) => (
                   <button
                     key={s.text}
@@ -114,10 +116,10 @@ export default function MealFields({
                         onKcalChange({ ...kcal, [key]: s.kcal !== null ? String(s.kcal) : "" });
                       }
                     }}
-                    className="rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1 text-xs text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+                    className="animate-pop-in rounded-full border border-sakura-200 bg-sakura-50 px-3 py-1 text-xs font-bold text-sakura-800 hover:bg-sakura-100 dark:border-sakura-800 dark:bg-[#3a2733] dark:text-sakura-200"
                   >
                     {s.text}
-                    {s.kcal !== null && <span className="ml-1 text-emerald-600 dark:text-emerald-500">{s.kcal}kcal</span>}
+                    {s.kcal !== null && <span className="ml-1 font-normal text-sakura-600 dark:text-sakura-300">{s.kcal}kcal</span>}
                   </button>
                 ))}
               </div>

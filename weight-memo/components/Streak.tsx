@@ -7,16 +7,18 @@ export default function Streak({ records, today }: { records: WeightRecord[]; to
   const recordedToday = records.some((r) => r.date === today);
 
   return (
-    <p className="rounded-lg bg-white p-4 text-sm shadow-sm dark:bg-neutral-800">
+    <div className="card bg-lemon-50 text-sm dark:bg-[#33301f]">
+      <p className="text-xs font-bold text-muted">
+        <span aria-hidden>🔥 </span>連続記録
+      </p>
       {streak === 0 ? (
-        "今日記録すると 1日目 です"
+        <p className="mt-1 font-bold text-lemon-800 dark:text-lemon-200">今日記録すると 1日目！</p>
       ) : (
         <>
-          <span aria-hidden>🔥 </span>
-          <span className="text-xl font-bold text-orange-600 dark:text-orange-400">{streak}日</span> 連続で記録中
-          {!recordedToday && <span className="ml-1 text-neutral-500">（今日記録すると {streak + 1}日）</span>}
+          <p className="mt-1 text-2xl font-extrabold text-lemon-800 dark:text-lemon-200">{streak}日</p>
+          {!recordedToday && <p className="text-xs text-muted">今日記録すると {streak + 1}日</p>}
         </>
       )}
-    </p>
+    </div>
   );
 }

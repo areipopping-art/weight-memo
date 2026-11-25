@@ -7,22 +7,30 @@ export default function PreviousDiff({ records }: { records: WeightRecord[] }) {
   const diff = diffFromPrevious(records);
   if (diff === null) return null;
 
-  let text: string;
-  let color: string;
-  if (diff > 0) {
-    text = `+${formatKg(diff)}`;
-    color = "text-red-600 dark:text-red-400";
-  } else if (diff < 0) {
-    text = `−${formatKg(-diff)}`;
-    color = "text-emerald-700 dark:text-emerald-400";
-  } else {
-    text = "±0.0kg";
-    color = "text-neutral-600 dark:text-neutral-300";
-  }
+  const down = diff < 0;
+  const up = diff > 0;
+  const text = up ? `+${formatKg(diff)}` : down ? `−${formatKg(-diff)}` : "±0.0kg";
 
   return (
-    <p className="rounded-lg bg-white p-4 text-sm shadow-sm dark:bg-neutral-800">
-      前回から <span className={`text-xl font-bold ${color}`}>{text}</span>
-    </p>
+    <div
+      className={`card text-sm ${
+        down
+          ? "bg-mint-50 dark:bg-[#1f3330]"
+          : up
+            ? "bg-sakura-50 dark:bg-[#3a2733]"
+            : ""
+      }`}
+    >
+      <p className="text-xs font-bold text-muted">
+        <span aria-hidden>{down ? "📉 " : up ? "📈 " : "➖ "}</span>前回から
+      </p>
+      <p
+        className={`mt-1 text-2xl font-extrabold ${
+          down ? "text-mint-700 dark:text-mint-300" : up ? "text-sakura-700 dark:text-sakura-300" : ""
+        }`}
+      >
+        {text}
+      </p>
+    </div>
   );
 }

@@ -3,11 +3,13 @@
 import { useState } from "react";
 import BodyFatField from "@/components/BodyFatField";
 import CelebrationModal from "@/components/CelebrationModal";
+import CheerBubble from "@/components/CheerBubble";
 import GoalProgress from "@/components/GoalProgress";
 import MealFields from "@/components/MealFields";
 import PhotoFields from "@/components/PhotoFields";
 import PreviousDiff from "@/components/PreviousDiff";
 import Streak from "@/components/Streak";
+import { cheerMessage } from "@/lib/cheer";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate, todayString } from "@/lib/date";
 import { EMPTY_KCAL_INPUT, EMPTY_MEALS, MAX_KCAL, formatKcal, parseKcal, totalKcal, trimMeals } from "@/lib/meals";
@@ -84,11 +86,13 @@ export default function Home() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-bold">今日の記録</h1>
+      <CheerBubble cheer={cheerMessage(data, today)} />
+
+      <h1 className="sr-only">今日の記録</h1>
 
       {todayRecord && (
-        <p className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950 dark:text-emerald-300">
-          <span className="font-bold">今日は記録済み ✓</span>
+        <p className="rounded-full border-2 border-mint-200 bg-mint-50 px-4 py-2 text-mint-800 dark:border-mint-800 dark:bg-[#1f3330] dark:text-mint-200">
+          <span className="font-bold">✅ 今日は記録済み</span>
           <span className="ml-2 text-sm">{formatKg(todayRecord.weight)}</span>
           {todayRecord.bodyFat != null && <span className="ml-2 text-sm">・体脂肪率 {formatBodyFat(todayRecord.bodyFat)}</span>}
           {todayKcal !== null && <span className="ml-2 text-sm">・合計 {formatKcal(todayKcal)}</span>}
@@ -96,10 +100,13 @@ export default function Home() {
       )}
 
       <GoalProgress data={data} />
-      <PreviousDiff records={data.records} />
-      <Streak records={data.records} today={today} />
+      <div className="grid grid-cols-2 gap-3">
+        <PreviousDiff records={data.records} />
+        <Streak records={data.records} today={today} />
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800">
+      <form onSubmit={handleSubmit} className="card space-y-4">
+        <h2 className="text-lg font-extrabold text-sakura-700 dark:text-sakura-300">✏️ 今日の記録</h2>
         <div className="space-y-1">
           <label htmlFor="date" className="block text-sm font-medium">
             日付
@@ -110,7 +117,7 @@ export default function Home() {
             max={today}
             value={dateValue}
             onChange={(e) => setDate(e.target.value || null)}
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-600 dark:bg-neutral-900"
+            className="input-soft w-full"
           />
         </div>
 
@@ -128,7 +135,7 @@ export default function Home() {
             placeholder="例：62.5"
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
-            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-2xl dark:border-neutral-600 dark:bg-neutral-900"
+            className="input-soft w-full text-2xl font-bold"
           />
         </div>
 
@@ -147,13 +154,13 @@ export default function Home() {
 
         <button
           type="submit"
-          className="w-full rounded-md bg-emerald-600 py-3 text-lg font-bold text-white hover:bg-emerald-700"
+          className="btn-primary w-full py-3 text-lg"
         >
-          記録する
+          記録する 💖
         </button>
 
         {message && (
-          <p role="status" className={message.ok ? "text-sm text-emerald-700" : "text-sm text-red-600"}>
+          <p role="status" className={message.ok ? "text-sm font-bold text-mint-700 dark:text-mint-300" : "text-sm font-bold text-sakura-700 dark:text-sakura-300"}>
             {message.text}
           </p>
         )}

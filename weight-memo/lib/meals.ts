@@ -11,6 +11,14 @@ export const MEAL_LABELS: Record<MealKey, string> = {
   snack: "間食",
 };
 
+/** 画面に出す絵文字 */
+export const MEAL_EMOJI: Record<MealKey, string> = {
+  breakfast: "🍞",
+  lunch: "🍙",
+  dinner: "🍲",
+  snack: "🍪",
+};
+
 export const EMPTY_MEALS: Meals = { breakfast: "", lunch: "", dinner: "", snack: "" };
 
 /** 区分ごとの食事（古い記録には meals がないので空にする） */

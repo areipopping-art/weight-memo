@@ -13,7 +13,7 @@ export default function BodyFatField({
   return (
     <div className="space-y-1">
       <label htmlFor={id} className="block text-sm font-medium">
-        体脂肪率（%） <span className="font-normal text-neutral-500">（任意）</span>
+        体脂肪率（%） <span className="font-normal text-muted">（任意）</span>
       </label>
       <input
         id={id}
@@ -25,7 +25,7 @@ export default function BodyFatField({
         placeholder="例：25.0"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-600 dark:bg-neutral-900"
+        className="input-soft w-full"
       />
     </div>
   );
