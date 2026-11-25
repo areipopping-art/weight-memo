@@ -42,13 +42,7 @@ export default function Onboarding() {
                   : "hover:border-[#3b82f6]"
               }`}
             >
-              {c.key === "female" ? (
-                <Mascot mood="happy" size={96} />
-              ) : (
-                <span className="flex h-24 items-center text-6xl" aria-hidden>
-                  🧑
-                </span>
-              )}
+              <Mascot mood="happy" size={96} variant={c.key === "female" ? "girl" : "boy"} />
               <span className="text-lg font-extrabold">{c.label}</span>
               <span className="text-xs text-muted">{c.sub}</span>
             </button>
