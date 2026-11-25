@@ -111,28 +111,33 @@ export default function Home() {
   }
 
   return (
-    <div className="space-y-6">
-      <CheerBubble cheer={cheerMessage(data, today)} />
+    // PC は2列（左に今の状況、右に記録フォーム）。タブレットは「目標」と「今日の食事」を横に並べる
+    <div className="space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-8 lg:space-y-0">
+      <div className="space-y-6">
+        <CheerBubble cheer={cheerMessage(data, today)} />
 
-      <h1 className="sr-only">今日の記録</h1>
+        <h1 className="sr-only">今日の記録</h1>
 
-      {todayRecord && (
-        <p className="rounded-full border-2 border-mint-200 bg-mint-50 px-4 py-2 text-mint-800 dark:border-mint-800 dark:bg-[var(--tint-mint)] dark:text-mint-200">
-          <span className="font-bold">✅ 今日は記録済み</span>
-          <span className="ml-2 text-sm">{formatKg(todayRecord.weight)}</span>
-          {detail && todayRecord.bodyFat != null && <span className="ml-2 text-sm">・体脂肪率 {formatBodyFat(todayRecord.bodyFat)}</span>}
-          {detail && todayKcal !== null && <span className="ml-2 text-sm">・合計 {formatKcal(todayKcal)}</span>}
-        </p>
-      )}
+        {todayRecord && (
+          <p className="rounded-full border-2 border-mint-200 bg-mint-50 px-4 py-2 text-mint-800 dark:border-mint-800 dark:bg-[var(--tint-mint)] dark:text-mint-200">
+            <span className="font-bold">✅ 今日は記録済み</span>
+            <span className="ml-2 text-sm">{formatKg(todayRecord.weight)}</span>
+            {detail && todayRecord.bodyFat != null && <span className="ml-2 text-sm">・体脂肪率 {formatBodyFat(todayRecord.bodyFat)}</span>}
+            {detail && todayKcal !== null && <span className="ml-2 text-sm">・合計 {formatKcal(todayKcal)}</span>}
+          </p>
+        )}
 
-      <GoalProgress data={data} />
-      {detail && <TodayNutrition record={todayRecord} kcalTarget={data.kcalTarget} />}
-      <div className="grid grid-cols-2 gap-3">
-        <PreviousDiff records={data.records} />
-        <Streak records={data.records} today={today} />
+        <div className="space-y-6 md:grid md:grid-cols-2 md:items-start md:gap-4 md:space-y-0 lg:block lg:space-y-6">
+          <GoalProgress data={data} />
+          {detail && <TodayNutrition record={todayRecord} kcalTarget={data.kcalTarget} />}
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <PreviousDiff records={data.records} />
+          <Streak records={data.records} today={today} />
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="card space-y-4">
+      <form onSubmit={handleSubmit} className="card space-y-4 lg:sticky lg:top-4">
         <h2 className="text-lg font-extrabold text-sakura-700 dark:text-sakura-300">✏️ 今日の記録</h2>
         <div className="space-y-1">
           <label htmlFor="date" className="block text-sm font-medium">
