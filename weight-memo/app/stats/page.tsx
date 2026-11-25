@@ -6,6 +6,7 @@ import MealWeightChart from "@/components/MealWeightChart";
 import MealWeightTable from "@/components/MealWeightTable";
 import WeightChart from "@/components/WeightChart";
 import { todayString } from "@/lib/date";
+import { showsDetail } from "@/lib/persona";
 import { recordsInLastDays } from "@/lib/stats";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 
@@ -16,11 +17,28 @@ const RANGES = [
 
 /** F-17 体重グラフ（目標ライン付き、週・月の切り替え）、F-24 食事と体重の振り返り */
 export default function StatsPage() {
-  const { data } = useWeightMemo();
+  const { data, setPersona } = useWeightMemo();
   const [range, setRange] = useState<(typeof RANGES)[number]["key"]>("week");
 
   const title = <h1 className="text-xl font-extrabold text-sakura-700 dark:text-sakura-300">📊 グラフ</h1>;
   if (data === null) return title;
+
+  // グラフは B しっかりモードの機能
+  if (!showsDetail(data.persona)) {
+    return (
+      <div className="space-y-6">
+        {title}
+        <div className="card flex flex-col items-center py-8 text-center">
+          <Mascot mood="cheer" size={110} />
+          <p className="mt-2 font-bold">グラフは「📊 B しっかりモード」の機能だよ</p>
+          <p className="mt-1 text-sm text-muted">体重の変化や、食事と体重の振り返りが見られます。</p>
+          <button type="button" onClick={() => setPersona("B")} className="btn-primary mt-4 px-6 py-2">
+            しっかりモードにする
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const current = RANGES.find((r) => r.key === range)!;
   const records = recordsInLastDays(data.records, todayString(), current.days);

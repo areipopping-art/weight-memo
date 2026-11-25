@@ -6,6 +6,7 @@ import BmiCard from "@/components/BmiCard";
 import CalorieTargetCard from "@/components/CalorieTargetCard";
 import DeadlineSection from "@/components/DeadlineSection";
 import { todayString } from "@/lib/date";
+import { showsDetail } from "@/lib/persona";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_WEIGHT, MIN_WEIGHT, formatKg, parseWeight } from "@/lib/weight";
 
@@ -76,9 +77,14 @@ export default function GoalPage() {
         )}
       </form>
 
-      {data && <DeadlineSection data={data} onSave={setGoalDeadline} />}
-      {data && <BmiCard data={data} />}
-      {data && <CalorieTargetCard data={data} today={todayString()} />}
+      {/* 期限・BMI・目安カロリーは B しっかりモードだけ */}
+      {data && showsDetail(data.persona) && (
+        <>
+          <DeadlineSection data={data} onSave={setGoalDeadline} />
+          <BmiCard data={data} />
+          <CalorieTargetCard data={data} today={todayString()} />
+        </>
+      )}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import PersonaSection from "@/components/PersonaSection";
 import ProfileForm from "@/components/ProfileForm";
 import { downloadCsv, recordsToCsv } from "@/lib/csv";
 import { todayString } from "@/lib/date";
+import { showsDetail } from "@/lib/persona";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_HEIGHT, MIN_HEIGHT, parseHeight } from "@/lib/weight";
 
@@ -68,22 +69,27 @@ export default function SettingsPage() {
         )}
       </form>
 
-      {data && <ProfileForm profile={data} onSave={setProfile} />}
+      {/* カロリー計算用の情報と CSV は B しっかりモードだけ */}
+      {data && showsDetail(data.persona) && (
+        <>
+          <ProfileForm profile={data} onSave={setProfile} />
 
-      <section className={box}>
-        <h2 className="font-extrabold">📄 CSV 書き出し</h2>
-        <p className="text-sm text-muted">
-          すべての記録を CSV ファイルでダウンロードします。Excel やスプレッドシートで開けます。
-        </p>
-        <button
-          type="button"
-          disabled={!data || data.records.length === 0}
-          onClick={() => data && downloadCsv(recordsToCsv(data.records), `weight-memo-${todayString()}.csv`)}
-          className="w-full rounded-full border-2 border-mint-300 bg-mint-50 py-2 text-sm font-bold text-mint-800 hover:bg-mint-100 disabled:opacity-50 dark:border-mint-800 dark:bg-[#1f3330] dark:text-mint-200"
-        >
-          CSV をダウンロード{data ? `（${data.records.length}件）` : ""}
-        </button>
-      </section>
+          <section className={box}>
+            <h2 className="font-extrabold">📄 CSV 書き出し</h2>
+            <p className="text-sm text-muted">
+              すべての記録を CSV ファイルでダウンロードします。Excel やスプレッドシートで開けます。
+            </p>
+            <button
+              type="button"
+              disabled={!data || data.records.length === 0}
+              onClick={() => data && downloadCsv(recordsToCsv(data.records), `weight-memo-${todayString()}.csv`)}
+              className="w-full rounded-full border-2 border-mint-300 bg-mint-50 py-2 text-sm font-bold text-mint-800 hover:bg-mint-100 disabled:opacity-50 dark:border-mint-800 dark:bg-[#1f3330] dark:text-mint-200"
+            >
+              CSV をダウンロード{data ? `（${data.records.length}件）` : ""}
+            </button>
+          </section>
+        </>
+      )}
 
       <section className={box}>
         <h2 className="font-extrabold">🗑️ 全データの削除</h2>
