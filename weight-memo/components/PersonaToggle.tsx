@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PERSONAS, personaInfo, type Persona } from "@/lib/persona";
+import { themeCopy } from "@/lib/theme";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 
 /** ヘッダーの A/B 切り替えスイッチ */
@@ -9,12 +10,14 @@ export default function PersonaToggle() {
   const { data, setPersona } = useWeightMemo();
   const [notice, setNotice] = useState<string | null>(null);
   const current: Persona = data?.persona ?? "B";
+  const copy = themeCopy(data?.sex);
+  const emojiOf = (p: Persona) => (p === "A" ? copy.personaAEmoji : personaInfo(p).emoji);
 
   function choose(p: Persona) {
     if (p === current) return;
     setPersona(p);
     const info = personaInfo(p);
-    setNotice(`${info.emoji} ${info.short}モードにしたよ！`);
+    setNotice(`${emojiOf(p)} ${copy.switched(info.short)}`);
     setTimeout(() => setNotice(null), 2200);
   }
 
@@ -45,7 +48,7 @@ export default function PersonaToggle() {
                   : "text-muted hover:bg-sakura-50 dark:hover:bg-[var(--hover)]"
               }`}
             >
-              <span aria-hidden>{p.emoji}</span> {p.key}
+              <span aria-hidden>{emojiOf(p.key)}</span> {p.key}
               <span className="hidden sm:inline"> {p.short}</span>
             </button>
           );

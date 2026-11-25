@@ -11,6 +11,7 @@ import PhotoFields from "@/components/PhotoFields";
 import PreviousDiff from "@/components/PreviousDiff";
 import Streak from "@/components/Streak";
 import { cheerMessage } from "@/lib/cheer";
+import { themeCopy } from "@/lib/theme";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate, todayString } from "@/lib/date";
 import { EMPTY_KCAL_INPUT, EMPTY_MEALS, MAX_KCAL, formatKcal, parseKcal, totalKcal, trimMeals } from "@/lib/meals";
@@ -181,7 +182,7 @@ export default function Home() {
           type="submit"
           className="btn-primary w-full py-3 text-lg"
         >
-          記録する 💖
+          {themeCopy(data.sex).recordButton}
         </button>
 
         {message && (
@@ -192,7 +193,7 @@ export default function Home() {
       </form>
 
       {celebrating && data.goalWeight !== null && (
-        <CelebrationModal goalWeight={data.goalWeight} onClose={() => setCelebrating(false)} />
+        <CelebrationModal goalWeight={data.goalWeight} sex={data.sex} onClose={() => setCelebrating(false)} />
       )}
     </div>
   );

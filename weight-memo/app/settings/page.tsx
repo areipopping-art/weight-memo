@@ -7,6 +7,7 @@ import SexSection from "@/components/SexSection";
 import { downloadCsv, recordsToCsv } from "@/lib/csv";
 import { todayString } from "@/lib/date";
 import { showsDetail } from "@/lib/persona";
+import { themeCopy } from "@/lib/theme";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_HEIGHT, MIN_HEIGHT, parseHeight } from "@/lib/weight";
 
@@ -38,7 +39,7 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <h1 className="text-xl font-extrabold text-sakura-700 dark:text-sakura-300">⚙️ 設定</h1>
 
-      {data && <PersonaSection value={data.persona} onChange={setPersona} />}
+      {data && <PersonaSection value={data.persona} onChange={setPersona} aEmoji={themeCopy(data.sex).personaAEmoji} />}
       {data && <SexSection value={data.sex} onChange={setSex} />}
 
       <form onSubmit={handleSubmit} className={box}>

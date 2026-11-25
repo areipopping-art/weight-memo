@@ -3,7 +3,16 @@
 import { PERSONAS, type Persona } from "@/lib/persona";
 
 /** 設定ページの A/B モード選択（説明つき） */
-export default function PersonaSection({ value, onChange }: { value: Persona; onChange: (p: Persona) => void }) {
+export default function PersonaSection({
+  value,
+  onChange,
+  aEmoji,
+}: {
+  value: Persona;
+  onChange: (p: Persona) => void;
+  /** A モードの絵文字（性別で変わる） */
+  aEmoji: string;
+}) {
   return (
     <fieldset className="card space-y-2">
       <legend className="sr-only">モード</legend>
@@ -29,7 +38,7 @@ export default function PersonaSection({ value, onChange }: { value: Persona; on
               className="sr-only"
             />
             <span className="font-extrabold">
-              <span aria-hidden>{p.emoji} </span>
+              <span aria-hidden>{p.key === "A" ? aEmoji : p.emoji} </span>
               {p.label}
               {active && <span className="ml-2 text-xs text-sakura-700 dark:text-sakura-300">✓ いまのモード</span>}
             </span>

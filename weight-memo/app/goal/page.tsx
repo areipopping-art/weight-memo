@@ -7,6 +7,7 @@ import CalorieTargetCard from "@/components/CalorieTargetCard";
 import DeadlineSection from "@/components/DeadlineSection";
 import { todayString } from "@/lib/date";
 import { showsDetail } from "@/lib/persona";
+import { themeCopy } from "@/lib/theme";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_WEIGHT, MIN_WEIGHT, formatKg, parseWeight } from "@/lib/weight";
 
@@ -44,7 +45,7 @@ export default function GoalPage() {
 
       {hasGoal && (
         <p className="card bg-gradient-to-br from-sakura-50 to-white font-bold dark:from-[var(--tint-sakura)] dark:to-[var(--card)]">
-          <span aria-hidden>🌸 </span>現在の目標：<span className="text-2xl font-extrabold text-sakura-600 dark:text-sakura-300">{formatKg(data.goalWeight!)}</span>
+          <span aria-hidden>{themeCopy(data.sex).goalEmoji} </span>現在の目標：<span className="text-2xl font-extrabold text-sakura-600 dark:text-sakura-300">{formatKg(data.goalWeight!)}</span>
         </p>
       )}
 

@@ -7,6 +7,7 @@ import MealList from "@/components/MealList";
 import RecordPhotos from "@/components/RecordPhotos";
 import { formatKcal, totalKcal } from "@/lib/meals";
 import { showsDetail } from "@/lib/persona";
+import { themeCopy } from "@/lib/theme";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate } from "@/lib/date";
 import { formatBodyFat, formatKg } from "@/lib/weight";
@@ -40,7 +41,7 @@ export default function HistoryPage() {
       {records.length === 0 ? (
         <div className="card flex flex-col items-center py-8 text-center">
           <Mascot mood="sleepy" size={110} />
-          <p className="mt-2 font-bold">まだ記録がないよ…</p>
+          <p className="mt-2 font-bold">{themeCopy(data.sex).emptyHistory}</p>
           <p className="mt-1 text-sm text-muted">
             <Link href="/" className="font-bold text-sakura-700 underline dark:text-sakura-300">
               ホーム
