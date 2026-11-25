@@ -115,3 +115,22 @@ export function frequentMeals(
     .slice(0, limit)
     .map(({ text, count, kcal }) => ({ text, count, kcal }));
 }
+
+/** A モードのひとことメモ（F-04）を、書いた回数の多い順に返す（同じ回数なら最近の順） */
+export function frequentMemos(records: { date: string; meal: string }[], limit: number): string[] {
+  const map = new Map<string, { count: number; lastDate: string }>();
+  for (const r of records) {
+    const text = r.meal.trim();
+    if (!text) continue;
+    const item = map.get(text);
+    if (!item) map.set(text, { count: 1, lastDate: r.date });
+    else {
+      item.count++;
+      if (r.date > item.lastDate) item.lastDate = r.date;
+    }
+  }
+  return [...map.entries()]
+    .sort(([, a], [, b]) => b.count - a.count || b.lastDate.localeCompare(a.lastDate))
+    .slice(0, limit)
+    .map(([text]) => text);
+}
