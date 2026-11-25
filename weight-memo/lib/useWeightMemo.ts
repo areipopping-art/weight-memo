@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { firstWeightSince } from "./achievements";
 import type { Profile } from "./calorie";
+import type { Persona } from "./persona";
 import { todayString } from "./date";
 import { clearPhotos, deletePhotosForDate } from "./photos";
 import { justReachedGoal, sortNewestFirst } from "./stats";
@@ -71,6 +72,11 @@ export function useWeightMemo() {
     save({ ...getSnapshot(), ...profile });
   }
 
+  /** A/B のモードを切り替える */
+  function setPersona(persona: Persona) {
+    save({ ...getSnapshot(), persona });
+  }
+
   /** F-19 全データを削除 */
   function deleteAll() {
     save(EMPTY);
@@ -78,5 +84,5 @@ export function useWeightMemo() {
     clearPhotos().catch(() => console.error("[weight-memo] 写真を削除できませんでした"));
   }
 
-  return { data, setGoalWeight, saveRecord, deleteRecord, setHeight, deleteAll, setGoalDeadline, setProfile };
+  return { data, setGoalWeight, saveRecord, deleteRecord, setHeight, deleteAll, setGoalDeadline, setProfile, setPersona };
 }

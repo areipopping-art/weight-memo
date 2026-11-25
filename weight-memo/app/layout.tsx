@@ -3,6 +3,7 @@ import { M_PLUS_Rounded_1c } from "next/font/google";
 import Link from "next/link";
 import { Suspense } from "react";
 import Mascot from "@/components/Mascot";
+import PersonaToggle from "@/components/PersonaToggle";
 import TabBar, { TabBarNav } from "@/components/TabBar";
 import "./globals.css";
 
@@ -29,13 +30,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Mascot mood="happy" size={34} />
               体重・食事メモ
             </Link>
-            <Link
-              href="/settings"
-              aria-label="設定"
-              className="btn-soft flex h-9 w-9 items-center justify-center text-lg"
-            >
-              <span aria-hidden>⚙️</span>
-            </Link>
+            <div className="flex items-center gap-2">
+              <PersonaToggle />
+              <Link
+                href="/settings"
+                aria-label="設定"
+                className="btn-soft flex h-9 w-9 items-center justify-center text-lg"
+              >
+                <span aria-hidden>⚙️</span>
+              </Link>
+            </div>
           </div>
         </header>
 

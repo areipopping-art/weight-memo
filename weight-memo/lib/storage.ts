@@ -3,6 +3,7 @@
 import type { Achievement } from "./achievements";
 import type { Activity, Profile, Sex } from "./calorie";
 import type { Kcal, Meals } from "./meals";
+import type { Persona } from "./persona";
 
 export type WeightRecord = {
   date: string; // "2026-11-24"（1日1件）
@@ -20,6 +21,7 @@ export type Data = Profile & {
   goalSetDate: string | null; // F-26 目標を決めた日
   goalStartWeight: number | null; // F-26 目標を決めたときの体重（記録が無ければ null）
   achievements: Achievement[]; // F-26 達成記録（古い順）
+  persona: Persona; // A ゆるっと / B しっかり（無ければ B）
   records: WeightRecord[];
 };
 
@@ -34,6 +36,7 @@ export const EMPTY: Data = {
   goalSetDate: null,
   goalStartWeight: null,
   achievements: [],
+  persona: "B",
   records: [],
 };
 
@@ -60,6 +63,7 @@ function parse(raw: string | null): Data {
       goalSetDate: typeof d.goalSetDate === "string" ? d.goalSetDate : null,
       goalStartWeight: typeof d.goalStartWeight === "number" ? d.goalStartWeight : null,
       achievements: Array.isArray(d.achievements) ? d.achievements : [],
+      persona: d.persona === "A" ? "A" : "B",
       records: Array.isArray(d.records) ? d.records : [],
     };
   } catch {
