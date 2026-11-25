@@ -10,6 +10,7 @@ import MemoField from "@/components/MemoField";
 import PhotoFields from "@/components/PhotoFields";
 import PreviousDiff from "@/components/PreviousDiff";
 import Streak from "@/components/Streak";
+import TodayNutrition from "@/components/TodayNutrition";
 import { cheerMessage } from "@/lib/cheer";
 import { themeCopy } from "@/lib/theme";
 import { useWeightMemo } from "@/lib/useWeightMemo";
@@ -125,6 +126,7 @@ export default function Home() {
       )}
 
       <GoalProgress data={data} />
+      {detail && <TodayNutrition record={todayRecord} kcalTarget={data.kcalTarget} />}
       <div className="grid grid-cols-2 gap-3">
         <PreviousDiff records={data.records} />
         <Streak records={data.records} today={today} />
