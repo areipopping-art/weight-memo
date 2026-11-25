@@ -96,7 +96,8 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
   const input = "input-soft w-full";
 
   return (
-    <div className="space-y-6">
+    // 広い画面でも入力欄が横に伸びすぎないようにする
+    <div className="space-y-6 md:mx-auto md:max-w-2xl">
       {title}
       <form onSubmit={handleSubmit} className="card space-y-4">
         <p className="inline-block rounded-full bg-sakura-100 px-3 py-1 text-sm font-bold text-sakura-800 dark:bg-[var(--tint-sakura-strong)] dark:text-sakura-100">📅 {formatShortDate(date)}</p>

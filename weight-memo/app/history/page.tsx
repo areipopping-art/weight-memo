@@ -50,7 +50,7 @@ export default function HistoryPage() {
           </p>
         </div>
       ) : (
-        <ul className="space-y-3">
+        <ul className="grid gap-3 md:grid-cols-2 md:items-start">
           {records.map((r) => (
             <li key={r.date} className="card flex animate-pop-in items-start gap-3">
               <div className="flex w-14 shrink-0 flex-col items-center rounded-2xl bg-sakura-100 py-1.5 text-sakura-800 dark:bg-[var(--tint-sakura-strong)] dark:text-sakura-100">

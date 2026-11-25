@@ -39,60 +39,63 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <h1 className="text-xl font-extrabold text-sakura-700 dark:text-sakura-300">⚙️ 設定</h1>
 
-      {data && <PersonaSection value={data.persona} onChange={setPersona} aEmoji={themeCopy(data.sex).personaAEmoji} />}
-      {data && <SexSection value={data.sex} onChange={setSex} />}
+      {/* タブレット・PC は設定のカードを2列に並べる */}
+      <div className="space-y-6 md:grid md:grid-cols-2 md:items-start md:gap-6 md:space-y-0">
+        {data && <PersonaSection value={data.persona} onChange={setPersona} aEmoji={themeCopy(data.sex).personaAEmoji} />}
+        {data && <SexSection value={data.sex} onChange={setSex} />}
 
-      <form onSubmit={handleSubmit} className={box}>
-        <label htmlFor="height" className="block text-sm font-medium">
-          📏 身長（cm）
-        </label>
-        <input
-          id="height"
-          type="number"
-          inputMode="decimal"
-          step="0.1"
-          min={MIN_HEIGHT}
-          max={MAX_HEIGHT}
-          placeholder="例：160.0"
-          value={value}
-          onChange={(e) => setInput(e.target.value)}
-          className="input-soft w-full text-lg font-bold"
-        />
-        <p className="text-xs text-muted">BMI の計算に使います。</p>
-        <button
-          type="submit"
-          className="w-full btn-primary py-2"
-        >
-          保存する
-        </button>
-        {message && (
-          <p role="status" className={message.ok ? "text-sm font-bold text-mint-700 dark:text-mint-300" : "text-sm font-bold text-sakura-700 dark:text-sakura-300"}>
-            {message.text}
-          </p>
-        )}
-      </form>
-
-      {/* カロリー計算用の情報と CSV は B しっかりモードだけ */}
-      {data && showsDetail(data.persona) && (
-        <>
-          <ProfileForm profile={data} onSave={setProfile} />
-
-          <section className={box}>
-            <h2 className="font-extrabold">📄 CSV 書き出し</h2>
-            <p className="text-sm text-muted">
-              すべての記録を CSV ファイルでダウンロードします。Excel やスプレッドシートで開けます。
+        <form onSubmit={handleSubmit} className={box}>
+          <label htmlFor="height" className="block text-sm font-medium">
+            📏 身長（cm）
+          </label>
+          <input
+            id="height"
+            type="number"
+            inputMode="decimal"
+            step="0.1"
+            min={MIN_HEIGHT}
+            max={MAX_HEIGHT}
+            placeholder="例：160.0"
+            value={value}
+            onChange={(e) => setInput(e.target.value)}
+            className="input-soft w-full text-lg font-bold"
+          />
+          <p className="text-xs text-muted">BMI の計算に使います。</p>
+          <button
+            type="submit"
+            className="w-full btn-primary py-2"
+          >
+            保存する
+          </button>
+          {message && (
+            <p role="status" className={message.ok ? "text-sm font-bold text-mint-700 dark:text-mint-300" : "text-sm font-bold text-sakura-700 dark:text-sakura-300"}>
+              {message.text}
             </p>
-            <button
-              type="button"
-              disabled={!data || data.records.length === 0}
-              onClick={() => data && downloadCsv(recordsToCsv(data.records), `weight-memo-${todayString()}.csv`)}
-              className="w-full rounded-full border-2 border-mint-300 bg-mint-50 py-2 text-sm font-bold text-mint-800 hover:bg-mint-100 disabled:opacity-50 dark:border-mint-800 dark:bg-[var(--tint-mint)] dark:text-mint-200"
-            >
-              CSV をダウンロード{data ? `（${data.records.length}件）` : ""}
-            </button>
-          </section>
-        </>
-      )}
+          )}
+        </form>
+
+        {/* カロリー計算用の情報と CSV は B しっかりモードだけ */}
+        {data && showsDetail(data.persona) && (
+          <>
+            <ProfileForm profile={data} onSave={setProfile} />
+
+            <section className={box}>
+              <h2 className="font-extrabold">📄 CSV 書き出し</h2>
+              <p className="text-sm text-muted">
+                すべての記録を CSV ファイルでダウンロードします。Excel やスプレッドシートで開けます。
+              </p>
+              <button
+                type="button"
+                disabled={!data || data.records.length === 0}
+                onClick={() => data && downloadCsv(recordsToCsv(data.records), `weight-memo-${todayString()}.csv`)}
+                className="w-full rounded-full border-2 border-mint-300 bg-mint-50 py-2 text-sm font-bold text-mint-800 hover:bg-mint-100 disabled:opacity-50 dark:border-mint-800 dark:bg-[var(--tint-mint)] dark:text-mint-200"
+              >
+                CSV をダウンロード{data ? `（${data.records.length}件）` : ""}
+              </button>
+            </section>
+          </>
+        )}
+      </div>
 
       <section className={box}>
         <h2 className="font-extrabold">🗑️ 全データの削除</h2>

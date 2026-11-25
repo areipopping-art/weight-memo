@@ -19,6 +19,7 @@ export default function GoalPage() {
   const hasGoal = data?.goalWeight != null;
   const value = input ?? (hasGoal ? data.goalWeight!.toFixed(1) : "");
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
+  const detail = data !== null && showsDetail(data.persona);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -44,50 +45,58 @@ export default function GoalPage() {
         </Link>
       </div>
 
-      {hasGoal && (
-        <p className="card bg-gradient-to-br from-sakura-50 to-white font-bold dark:from-[var(--tint-sakura)] dark:to-[var(--card)]">
-          <span aria-hidden>{themeCopy(data.sex).goalEmoji} </span>現在の目標：<span className="text-2xl font-extrabold text-sakura-600 dark:text-sakura-300">{formatKg(data.goalWeight!)}</span>
-        </p>
-      )}
+      {/* 期限・BMI・目安カロリーは B しっかりモードだけ。タブレット・PC では左右2列にする */}
+      <div className={detail ? "space-y-6 md:grid md:grid-cols-2 md:items-start md:gap-6 md:space-y-0" : "space-y-6 md:max-w-2xl"}>
+        <div className="space-y-6">
+          {hasGoal && (
+            <p className="card bg-gradient-to-br from-sakura-50 to-white font-bold dark:from-[var(--tint-sakura)] dark:to-[var(--card)]">
+              <span aria-hidden>{themeCopy(data.sex).goalEmoji} </span>現在の目標：<span className="text-2xl font-extrabold text-sakura-600 dark:text-sakura-300">{formatKg(data.goalWeight!)}</span>
+            </p>
+          )}
 
-      <form onSubmit={handleSubmit} className="space-y-3 card">
-        <label htmlFor="goal" className="block text-sm font-medium">
-          目標体重（kg）
-        </label>
-        <input
-          id="goal"
-          type="number"
-          inputMode="decimal"
-          step="0.1"
-          min={MIN_WEIGHT}
-          max={MAX_WEIGHT}
-          placeholder="例：60.0"
-          value={value}
-          onChange={(e) => setInput(e.target.value)}
-          className="input-soft w-full text-lg font-bold"
-        />
-        <button
-          type="submit"
-          className="w-full btn-primary py-2"
-        >
-          {hasGoal ? "変更する" : "保存する"}
-        </button>
-        {message && (
-          <p role="status" className={message.ok ? "text-sm font-bold text-mint-700 dark:text-mint-300" : "text-sm font-bold text-sakura-700 dark:text-sakura-300"}>
-            {message.text}
-          </p>
+          <form onSubmit={handleSubmit} className="space-y-3 card">
+            <label htmlFor="goal" className="block text-sm font-medium">
+              目標体重（kg）
+            </label>
+            <input
+              id="goal"
+              type="number"
+              inputMode="decimal"
+              step="0.1"
+              min={MIN_WEIGHT}
+              max={MAX_WEIGHT}
+              placeholder="例：60.0"
+              value={value}
+              onChange={(e) => setInput(e.target.value)}
+              className="input-soft w-full text-lg font-bold"
+            />
+            <button
+              type="submit"
+              className="w-full btn-primary py-2"
+            >
+              {hasGoal ? "変更する" : "保存する"}
+            </button>
+            {message && (
+              <p role="status" className={message.ok ? "text-sm font-bold text-mint-700 dark:text-mint-300" : "text-sm font-bold text-sakura-700 dark:text-sakura-300"}>
+                {message.text}
+              </p>
+            )}
+          </form>
+
+          {data && detail && (
+            <>
+              <DeadlineSection data={data} onSave={setGoalDeadline} />
+              <KcalTargetSection data={data} today={todayString()} onSave={setKcalTarget} />
+            </>
+          )}
+        </div>
+        {data && detail && (
+          <div className="space-y-6">
+            <BmiCard data={data} />
+            <CalorieTargetCard data={data} today={todayString()} />
+          </div>
         )}
-      </form>
-
-      {/* 期限・BMI・目安カロリーは B しっかりモードだけ */}
-      {data && showsDetail(data.persona) && (
-        <>
-          <DeadlineSection data={data} onSave={setGoalDeadline} />
-          <BmiCard data={data} />
-          <KcalTargetSection data={data} today={todayString()} onSave={setKcalTarget} />
-          <CalorieTargetCard data={data} today={todayString()} />
-        </>
-      )}
+      </div>
     </div>
   );
 }
