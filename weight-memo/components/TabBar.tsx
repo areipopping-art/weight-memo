@@ -18,11 +18,9 @@ export default function TabBar() {
 /** pathname が null のときはどのタブも強調しない（読み込み中の表示用） */
 export function TabBarNav({ pathname }: { pathname: string | null }) {
   return (
-    <nav
-      aria-label="メインメニュー"
-      className="fixed inset-x-0 bottom-0 border-t border-black/10 bg-white/95 backdrop-blur dark:border-white/10 dark:bg-neutral-900/95"
-    >
-      <ul className="mx-auto grid max-w-md grid-cols-4">
+    <nav aria-label="メインメニュー" className="fixed inset-x-0 bottom-0 px-3 pb-3">
+      {/* ふわっと浮いた丸いバー */}
+      <ul className="mx-auto grid max-w-md grid-cols-4 rounded-full border border-[var(--card-border)] bg-[var(--card)]/95 p-1.5 shadow-[var(--card-shadow)] backdrop-blur">
         {tabs.map((tab) => {
           const active =
             pathname !== null && (tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href));
@@ -31,11 +29,13 @@ export function TabBarNav({ pathname }: { pathname: string | null }) {
               <Link
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
-                className={`flex flex-col items-center gap-0.5 py-2 text-xs ${
-                  active ? "font-bold text-emerald-700 dark:text-emerald-400" : "text-neutral-500"
+                className={`flex flex-col items-center gap-0.5 rounded-full py-1.5 text-xs transition-colors ${
+                  active
+                    ? "bg-sakura-100 font-extrabold text-sakura-700 dark:bg-[#4a3542] dark:text-sakura-200"
+                    : "text-muted hover:bg-sakura-50 dark:hover:bg-[#3a2f40]"
                 }`}
               >
-                <span className="text-xl" aria-hidden>
+                <span className={`text-xl transition-transform ${active ? "scale-125 animate-bounce-soft" : ""}`} aria-hidden>
                   {tab.icon}
                 </span>
                 {tab.label}

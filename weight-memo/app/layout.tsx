@@ -23,7 +23,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ja" className={`${rounded.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <header className="border-b border-black/10 bg-white dark:border-white/10 dark:bg-neutral-900">
+        <header className="border-b border-[var(--card-border)] bg-[var(--card)]/90 backdrop-blur">
           <div className="mx-auto flex max-w-md items-center justify-between px-4 py-3">
             <Link href="/" className="flex items-center gap-1.5 text-lg font-extrabold text-sakura-700 dark:text-sakura-300">
               <Mascot mood="happy" size={34} />
@@ -32,16 +32,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Link
               href="/settings"
               aria-label="設定"
-              className="rounded-md px-2 py-1 text-xl hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              className="btn-soft flex h-9 w-9 items-center justify-center text-lg"
             >
-              <span aria-hidden>⚙</span>
+              <span aria-hidden>⚙️</span>
             </Link>
           </div>
         </header>
 
         <main className="mx-auto w-full max-w-md flex-1 px-4 pt-4 pb-28">
           {children}
-          <p className="mt-10 text-center text-xs text-neutral-500">
+          <p className="mt-10 text-center text-xs text-muted">
             記録はこの端末のブラウザにだけ保存されます。共有のパソコンでは他の人にも見えるのでご注意ください。
           </p>
         </main>
