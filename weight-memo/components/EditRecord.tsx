@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import BodyFatField from "@/components/BodyFatField";
 import MealFields from "@/components/MealFields";
+import MemoField from "@/components/MemoField";
 import PhotoFields from "@/components/PhotoFields";
 import { formatShortDate } from "@/lib/date";
+import { showsDetail } from "@/lib/persona";
 import { applyPhotoChanges, type PhotoChanges } from "@/lib/photos";
 import { MAX_KCAL, kcalInputOf, mealsOf, parseKcal, trimMeals, type KcalInput, type Meals } from "@/lib/meals";
 import { useWeightMemo } from "@/lib/useWeightMemo";
@@ -30,6 +32,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
   if (data === null) return title;
 
   const record = data.records.find((r) => r.date === date);
+  const detail = showsDetail(data.persona);
   if (!record) {
     return (
       <div className="space-y-6">
@@ -103,24 +106,30 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
           />
         </div>
 
-        <BodyFatField id="edit-body-fat" value={bodyFatValue} onChange={setBodyFat} />
-
-        <MealFields
-          idPrefix="edit-meal"
-          value={mealsValue}
-          onChange={setMeals}
-          kcal={kcalValue}
-          onKcalChange={setKcal}
-          records={data.records}
-        />
+        {/* A ゆるっとモードでは B の項目を隠す（値は記録のまま保存されるので消えない） */}
+        {detail ? (
+          <>
+            <BodyFatField id="edit-body-fat" value={bodyFatValue} onChange={setBodyFat} />
+            <MealFields
+              idPrefix="edit-meal"
+              value={mealsValue}
+              onChange={setMeals}
+              kcal={kcalValue}
+              onKcalChange={setKcal}
+              records={data.records}
+            />
+          </>
+        ) : (
+          <MemoField id="edit-memo" value={mealValue} onChange={setMeal} records={data.records} />
+        )}
 
         <PhotoFields idPrefix="edit-photo" date={date} changes={photos} onChange={setPhotos} />
 
-        {/* 食事の区分ができる前の1行メモ。ある記録だけ表示する */}
-        {record.meal && (
+        {/* B では、ひとことメモ（A モードや以前の記録で書いたもの）がある記録だけ表示する */}
+        {detail && record.meal && (
           <div className="space-y-1">
             <label htmlFor="edit-memo" className="block text-sm font-medium">
-              メモ <span className="font-normal text-muted">（以前の記録）</span>
+              📝 ひとことメモ
             </label>
             <textarea
               id="edit-memo"

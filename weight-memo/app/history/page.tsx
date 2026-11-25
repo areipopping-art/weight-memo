@@ -6,6 +6,7 @@ import Mascot from "@/components/Mascot";
 import MealList from "@/components/MealList";
 import RecordPhotos from "@/components/RecordPhotos";
 import { formatKcal, totalKcal } from "@/lib/meals";
+import { showsDetail } from "@/lib/persona";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate } from "@/lib/date";
 import { formatBodyFat, formatKg } from "@/lib/weight";
@@ -26,6 +27,7 @@ export default function HistoryPage() {
     return <h1 className="text-xl font-extrabold text-sakura-700 dark:text-sakura-300">📋 記録一覧</h1>;
   }
 
+  const detail = showsDetail(data.persona); // B しっかりモードの項目を出すか
   // F-07 新しい順
   const records = [...data.records].sort((a, b) => b.date.localeCompare(a.date));
 
@@ -57,14 +59,14 @@ export default function HistoryPage() {
               <div className="min-w-0 flex-1">
                 <p className="text-lg font-extrabold">
                   {formatKg(r.weight)}
-                  {r.bodyFat != null && (
+                  {detail && r.bodyFat != null && (
                     <span className="ml-2 text-sm font-normal text-muted">体脂肪 {formatBodyFat(r.bodyFat)}</span>
                   )}
-                  {totalKcal(r) !== null && (
+                  {detail && totalKcal(r) !== null && (
                     <span className="ml-2 rounded-full bg-lemon-100 px-2 py-0.5 text-xs font-bold text-lemon-800 dark:bg-[#33301f] dark:text-lemon-200">🔥 合計 {formatKcal(totalKcal(r)!)}</span>
                   )}
                 </p>
-                <MealList record={r} />
+                <MealList record={r} showKcal={detail} />
                 <RecordPhotos date={r.date} />
               </div>
               {confirming === r.date ? (
