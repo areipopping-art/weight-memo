@@ -2,6 +2,7 @@
 
 import { Fragment, useState } from "react";
 import FoodCalculator from "@/components/FoodCalculator";
+import { addNutrients, formatNutrients, type Nutrients } from "@/lib/foods";
 import {
   MAX_KCAL,
   MEAL_KEYS,
@@ -10,6 +11,7 @@ import {
   frequentMeals,
   type KcalInput,
   type MealKey,
+  type MealNutrients,
   type Meals,
 } from "@/lib/meals";
 import type { WeightRecord } from "@/lib/storage";
@@ -29,7 +31,7 @@ const MAX_MEAL_LENGTH = 100;
 /**
  * F-13 朝・昼・夜・間食の入力欄、F-14 区分ごとのカロリー欄、
  * F-22 入力中の区分でよく食べるものを候補として表示、
- * F-29 食品を選んでカロリーを自動計算
+ * F-29 食品を選んでカロリーを自動計算、F-30 たんぱく質・脂質・糖質も足していく
  */
 export default function MealFields({
   idPrefix,
@@ -37,6 +39,8 @@ export default function MealFields({
   onChange,
   kcal,
   onKcalChange,
+  nutrients,
+  onNutrientsChange,
   records,
 }: {
   idPrefix: string;
@@ -44,6 +48,8 @@ export default function MealFields({
   onChange: (meals: Meals) => void;
   kcal: KcalInput;
   onKcalChange: (kcal: KcalInput) => void;
+  nutrients: MealNutrients;
+  onNutrientsChange: (nutrients: MealNutrients) => void;
   records: WeightRecord[];
 }) {
   // 候補を表示している区分（その行の入力欄にフォーカスがある間）
@@ -53,7 +59,7 @@ export default function MealFields({
   const input = "input-soft";
 
   /** 計算した食品をメモの末尾に足し、カロリーを今の値に足す。入れられなければエラーの文を返す */
-  function applyFoods(key: MealKey, text: string, addKcal: number): string | null {
+  function applyFoods(key: MealKey, text: string, addKcal: number, add: Nutrients): string | null {
     const current = value[key].trim();
     const nextText = current === "" ? text : `${current}、${text}`;
     if (nextText.length > MAX_MEAL_LENGTH) return `食事メモが${MAX_MEAL_LENGTH}文字を超えるので入れられません`;
@@ -64,6 +70,8 @@ export default function MealFields({
     if (nextKcal > MAX_KCAL) return `カロリーが ${MAX_KCAL}kcal を超えるので入れられません`;
     onChange({ ...value, [key]: nextText });
     onKcalChange({ ...kcal, [key]: String(nextKcal) });
+    const currentNutrients = nutrients[key];
+    onNutrientsChange({ ...nutrients, [key]: currentNutrients ? addNutrients(currentNutrients, add) : add });
     setCalculating(null);
     return null;
   }
@@ -73,6 +81,7 @@ export default function MealFields({
       <legend className="mb-1 text-sm font-medium">
         食事メモ・カロリー <span className="font-normal text-muted">（どちらも任意）</span>
       </legend>
+      <p className="text-xs text-muted">🔍 で食品を選ぶと、カロリーと たんぱく質・脂質・糖質 を自動で計算します（手で入れたカロリーの分は栄養素に入りません）</p>
       {MEAL_KEYS.map((key) => {
         const frequent = active === key ? frequentMeals(records, key, SUGGESTION_LIMIT + 1) : [];
         const current = frequent.find((s) => s.text === value[key].trim());
@@ -148,11 +157,25 @@ export default function MealFields({
               )}
             </div>
 
-            {calculating === key ? (
+            {nutrients[key] && (
+            <p className="-mt-1 ml-16 flex flex-wrap items-center gap-x-2 text-xs text-muted">
+              <span>🥩 {formatNutrients(nutrients[key])}</span>
+              <button
+                type="button"
+                onClick={() => onNutrientsChange({ ...nutrients, [key]: null })}
+                aria-label={`${MEAL_LABELS[key]}の栄養素をリセット`}
+                className="font-bold underline hover:text-sakura-700"
+              >
+                リセット
+              </button>
+            </p>
+          )}
+
+          {calculating === key ? (
               <FoodCalculator
                 idPrefix={`${idPrefix}-${key}-food`}
                 mealLabel={MEAL_LABELS[key]}
-                onApply={(text, total) => applyFoods(key, text, total)} // 栄養素の保存は次のコミットで
+                onApply={(text, total, add) => applyFoods(key, text, total, add)}
                 onClose={() => setCalculating(null)}
               />
             ) : (

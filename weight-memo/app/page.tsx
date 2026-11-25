@@ -14,7 +14,7 @@ import { cheerMessage } from "@/lib/cheer";
 import { themeCopy } from "@/lib/theme";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { formatShortDate, todayString } from "@/lib/date";
-import { EMPTY_KCAL_INPUT, EMPTY_MEALS, MAX_KCAL, formatKcal, parseKcal, totalKcal, trimMeals } from "@/lib/meals";
+import { EMPTY_KCAL_INPUT, EMPTY_MEALS, EMPTY_MEAL_NUTRIENTS, MAX_KCAL, formatKcal, parseKcal, totalKcal, trimMeals } from "@/lib/meals";
 import { showsDetail } from "@/lib/persona";
 import type { WeightRecord } from "@/lib/storage";
 import { applyPhotoChanges, type PhotoChanges } from "@/lib/photos";
@@ -37,6 +37,7 @@ export default function Home() {
   const [bodyFat, setBodyFat] = useState(""); // F-21
   const [meals, setMeals] = useState(EMPTY_MEALS); // F-13
   const [kcal, setKcal] = useState(EMPTY_KCAL_INPUT); // F-14
+  const [nutrients, setNutrients] = useState(EMPTY_MEAL_NUTRIENTS); // F-30
   const [memo, setMemo] = useState(""); // F-04 A モードのひとことメモ
   const [photos, setPhotos] = useState<PhotoChanges>({}); // F-23
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
@@ -67,6 +68,7 @@ export default function Home() {
         meal: memo.trim(),
         meals: existing?.meals,
         kcal: existing?.kcal,
+        nutrients: existing?.nutrients,
         bodyFat: existing?.bodyFat ?? null,
       });
       return;
@@ -86,6 +88,7 @@ export default function Home() {
       meal: existing?.meal ?? "",
       meals: trimMeals(meals),
       kcal: parsedKcal,
+      nutrients,
       bodyFat: parsedBodyFat,
     });
   }
@@ -101,6 +104,7 @@ export default function Home() {
     setBodyFat("");
     setMeals(EMPTY_MEALS);
     setKcal(EMPTY_KCAL_INPUT);
+    setNutrients(EMPTY_MEAL_NUTRIENTS);
     setMemo("");
     setMessage({ ok: true, text: `${formatShortDate(dateValue)} の体重 ${formatKg(w)} を保存しました` });
   }
@@ -169,6 +173,8 @@ export default function Home() {
               onChange={setMeals}
               kcal={kcal}
               onKcalChange={setKcal}
+              nutrients={nutrients}
+              onNutrientsChange={setNutrients}
               records={data.records}
             />
           </>

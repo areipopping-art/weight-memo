@@ -2,7 +2,7 @@
 
 import type { Achievement } from "./achievements";
 import type { Activity, Profile, Sex } from "./calorie";
-import type { Kcal, Meals } from "./meals";
+import type { Kcal, MealNutrients, Meals } from "./meals";
 import type { Persona } from "./persona";
 
 export type WeightRecord = {
@@ -12,6 +12,7 @@ export type WeightRecord = {
   meals?: Meals; // F-13 朝・昼・夜・間食（空でも可）
   kcal?: Kcal; // F-14 区分ごとのカロリー（未入力は null）
   bodyFat?: number | null; // F-21 体脂肪率（%、未入力は null）
+  nutrients?: MealNutrients; // F-30 区分ごとのたんぱく質・脂質・糖質（食品から計算した分）
 };
 
 export type Data = Profile & {

@@ -1,5 +1,7 @@
 // F-13 食事の区分（朝・昼・夜・間食）
 
+import { ZERO_NUTRIENTS, addNutrients, type Nutrients } from "./foods";
+
 export const MEAL_KEYS = ["breakfast", "lunch", "dinner", "snack"] as const;
 export type MealKey = (typeof MEAL_KEYS)[number];
 export type Meals = Record<MealKey, string>;
@@ -79,6 +81,22 @@ export function totalKcal(record: { kcal?: Partial<Kcal> }): number | null {
 
 export function formatKcal(n: number): string {
   return `${n.toLocaleString("ja-JP")}kcal`;
+}
+
+// F-30 区分ごとのたんぱく質・脂質・糖質（「食品から計算」した分だけ。未計算は null）
+
+export type MealNutrients = Record<MealKey, Nutrients | null>;
+export const EMPTY_MEAL_NUTRIENTS: MealNutrients = { breakfast: null, lunch: null, dinner: null, snack: null };
+
+/** 保存済みの記録の区分ごとの栄養素（古い記録にはないので空にする） */
+export function mealNutrientsOf(record: { nutrients?: Partial<MealNutrients> }): MealNutrients {
+  return { ...EMPTY_MEAL_NUTRIENTS, ...record.nutrients };
+}
+
+/** 1日の栄養素の合計（どの区分も未計算なら null） */
+export function totalNutrients(record: { nutrients?: Partial<MealNutrients> }): Nutrients | null {
+  const values = MEAL_KEYS.map((k) => record.nutrients?.[k]).filter((v): v is Nutrients => v != null);
+  return values.length === 0 ? null : values.reduce(addNutrients, ZERO_NUTRIENTS);
 }
 
 // F-22 よく食べるもの

@@ -10,7 +10,17 @@ import PhotoFields from "@/components/PhotoFields";
 import { formatShortDate } from "@/lib/date";
 import { showsDetail } from "@/lib/persona";
 import { applyPhotoChanges, type PhotoChanges } from "@/lib/photos";
-import { MAX_KCAL, kcalInputOf, mealsOf, parseKcal, trimMeals, type KcalInput, type Meals } from "@/lib/meals";
+import {
+  MAX_KCAL,
+  kcalInputOf,
+  mealNutrientsOf,
+  mealsOf,
+  parseKcal,
+  trimMeals,
+  type KcalInput,
+  type MealNutrients,
+  type Meals,
+} from "@/lib/meals";
 import { useWeightMemo } from "@/lib/useWeightMemo";
 import { MAX_BODY_FAT, MAX_WEIGHT, MIN_BODY_FAT, MIN_WEIGHT, parseBodyFat, parseWeight } from "@/lib/weight";
 
@@ -24,6 +34,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
   const [bodyFat, setBodyFat] = useState<string | null>(null); // F-21
   const [meals, setMeals] = useState<Meals | null>(null); // F-13
   const [kcal, setKcal] = useState<KcalInput | null>(null); // F-14
+  const [nutrients, setNutrients] = useState<MealNutrients | null>(null); // F-30
   const [photos, setPhotos] = useState<PhotoChanges>({}); // F-23
   const [meal, setMeal] = useState<string | null>(null); // 以前の1行メモ
   const [error, setError] = useState<string | null>(null);
@@ -52,6 +63,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
   const bodyFatValue = bodyFat ?? (record.bodyFat != null ? record.bodyFat.toFixed(1) : "");
   const mealsValue = meals ?? mealsOf(record);
   const kcalValue = kcal ?? kcalInputOf(record);
+  const nutrientsValue = nutrients ?? mealNutrientsOf(record);
   const mealValue = meal ?? record.meal;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -71,7 +83,7 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
       setError(`カロリーは 0〜${MAX_KCAL}kcal の数字で入力してください`);
       return;
     }
-    saveRecord({ date, weight: w, bodyFat: parsedBodyFat, meal: mealValue.trim(), meals: trimMeals(mealsValue), kcal: parsedKcal });
+    saveRecord({ date, weight: w, bodyFat: parsedBodyFat, meal: mealValue.trim(), meals: trimMeals(mealsValue), kcal: parsedKcal, nutrients: nutrientsValue });
     try {
       await applyPhotoChanges(date, photos);
     } catch {
@@ -116,6 +128,8 @@ export default function EditRecord({ params }: { params: Promise<{ date: string 
               onChange={setMeals}
               kcal={kcalValue}
               onKcalChange={setKcal}
+              nutrients={nutrientsValue}
+              onNutrientsChange={setNutrients}
               records={data.records}
             />
           </>
