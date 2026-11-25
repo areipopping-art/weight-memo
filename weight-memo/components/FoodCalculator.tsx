@@ -5,11 +5,16 @@ import {
   CATEGORY_EMOJI,
   MAX_GRAMS,
   MIN_GRAMS,
+  ZERO_NUTRIENTS,
+  addNutrients,
+  formatNutrients,
   kcalOf,
+  nutrientsOf,
   parseGrams,
   searchFoods,
   shortName,
   type Food,
+  type Nutrients,
 } from "@/lib/foods";
 import { formatKcal } from "@/lib/meals";
 
@@ -22,7 +27,8 @@ type Item = { food: Food; grams: number };
 
 /**
  * F-29 食品を選んでグラムを入れると、カロリーを自動で計算する。
- * onApply にメモに足す文字（例：白米150g、鮭80g）と合計 kcal を渡す。
+ * F-30 たんぱく質・脂質・糖質も計算する。
+ * onApply にメモに足す文字（例：白米150g、鮭80g）と合計 kcal・栄養素を渡す。
  * 入れられなかったときは onApply がエラーの文を返す。
  */
 export default function FoodCalculator({
@@ -33,7 +39,7 @@ export default function FoodCalculator({
 }: {
   idPrefix: string;
   mealLabel: string;
-  onApply: (text: string, kcal: number) => string | null;
+  onApply: (text: string, kcal: number, nutrients: Nutrients) => string | null;
   onClose: () => void;
 }) {
   const [query, setQuery] = useState("");
@@ -45,6 +51,7 @@ export default function FoodCalculator({
   const results = selected ? [] : searchFoods(query, RESULT_LIMIT);
   const parsedGrams = parseGrams(grams);
   const total = items.reduce((sum, i) => sum + kcalOf(i.food, i.grams), 0);
+  const totalNutrients = items.reduce((sum, i) => addNutrients(sum, nutrientsOf(i.food, i.grams)), ZERO_NUTRIENTS);
 
   function select(food: Food) {
     setSelected(food);
@@ -67,7 +74,7 @@ export default function FoodCalculator({
 
   function apply() {
     const text = items.map((i) => `${shortName(i.food)}${i.grams}g`).join("、");
-    const message = onApply(text, total);
+    const message = onApply(text, total, totalNutrients);
     if (message) setError(message);
   }
 
@@ -139,6 +146,9 @@ export default function FoodCalculator({
               {parsedGrams !== null ? `= ${formatKcal(kcalOf(selected, parsedGrams))}` : ""}
             </span>
           </div>
+          {parsedGrams !== null && (
+            <p className="text-right text-xs text-muted">{formatNutrients(nutrientsOf(selected, parsedGrams))}</p>
+          )}
           <div className="flex gap-2">
             <button type="button" onClick={() => setSelected(null)} className="btn-soft flex-1 py-2 text-sm">
               食品を選び直す
@@ -213,6 +223,7 @@ export default function FoodCalculator({
             ))}
           </ul>
           <p className="text-right text-sm font-extrabold">合計 {formatKcal(total)}</p>
+          <p className="text-right text-xs text-muted">{formatNutrients(totalNutrients)}</p>
           <button type="button" onClick={apply} className="btn-primary w-full py-2 text-sm">
             ✅ メモとカロリーに入れる
           </button>

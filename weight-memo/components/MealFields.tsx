@@ -152,7 +152,7 @@ export default function MealFields({
               <FoodCalculator
                 idPrefix={`${idPrefix}-${key}-food`}
                 mealLabel={MEAL_LABELS[key]}
-                onApply={(text, total) => applyFoods(key, text, total)}
+                onApply={(text, total) => applyFoods(key, text, total)} // 栄養素の保存は次のコミットで
                 onClose={() => setCalculating(null)}
               />
             ) : (
