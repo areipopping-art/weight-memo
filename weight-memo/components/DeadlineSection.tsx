@@ -38,10 +38,10 @@ export default function DeadlineSection({
   }
 
   return (
-    <section className="space-y-3 rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800">
+    <section className="space-y-3 card">
       <form onSubmit={handleSubmit} className="space-y-3">
         <label htmlFor="deadline" className="block text-sm font-medium">
-          目標の期限 <span className="font-normal text-neutral-500">（任意）</span>
+          ⏰ 目標の期限 <span className="font-normal text-muted">（任意）</span>
         </label>
         <input
           id="deadline"
@@ -49,13 +49,13 @@ export default function DeadlineSection({
           min={addDays(today, 1)}
           value={value}
           onChange={(e) => setInput(e.target.value)}
-          className="w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-600 dark:bg-neutral-900"
+          className="input-soft w-full"
         />
         <div className="flex gap-2">
           <button
             type="submit"
             disabled={!value}
-            className="flex-1 rounded-md bg-emerald-600 py-2 font-bold text-white hover:bg-emerald-700 disabled:opacity-50"
+            className="flex-1 btn-primary py-2"
           >
             期限を保存
           </button>
@@ -63,14 +63,14 @@ export default function DeadlineSection({
             <button
               type="button"
               onClick={handleClear}
-              className="rounded-md border border-neutral-300 px-4 py-2 text-sm dark:border-neutral-600"
+              className="btn-soft px-4 py-2 text-sm"
             >
               解除
             </button>
           )}
         </div>
         {message && (
-          <p role="status" className="text-sm text-emerald-700">
+          <p role="status" className="text-sm font-bold text-mint-700 dark:text-mint-300">
             {message}
           </p>
         )}
@@ -83,7 +83,7 @@ export default function DeadlineSection({
 
 function PaceText({ data, today }: { data: Data; today: string }) {
   const latest = sortNewestFirst(data.records)[0];
-  const hint = "text-sm text-neutral-500";
+  const hint = "text-sm text-muted";
 
   if (!data.goalDeadline) return <p className={hint}>期限を入れると「1週間あたり何kg」の目安が出ます。</p>;
   if (data.goalWeight === null) return <p className={hint}>目標体重を設定すると、目安が表示されます。</p>;
@@ -92,27 +92,27 @@ function PaceText({ data, today }: { data: Data; today: string }) {
   const pace = goalPace(latest.weight, data.goalWeight, data.goalDeadline, today);
 
   if (pace.kind === "achieved") {
-    return <p className="font-bold text-emerald-700 dark:text-emerald-400">目標を達成しています 🎉</p>;
+    return <p className="font-bold text-sakura-700 dark:text-sakura-300">目標を達成しています 🎉</p>;
   }
   if (pace.kind === "overdue") {
     return (
-      <p className="text-sm text-red-600">
+      <p className="text-sm font-bold text-sakura-700 dark:text-sakura-300">
         期限（{formatShortDate(data.goalDeadline)}）を過ぎました。目標まであと {formatKg(pace.remainingKg)}。新しい期限を決めましょう。
       </p>
     );
   }
   return (
-    <div className="border-t border-neutral-200 pt-3 dark:border-neutral-700">
+    <div className="border-t border-[var(--card-border)] pt-3 ">
       <p>
         1週間あたり{" "}
-        <span className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">{pace.perWeekKg.toFixed(2)}kg</span>{" "}
+        <span className="text-2xl font-bold text-sakura-700 dark:text-sakura-300">{pace.perWeekKg.toFixed(2)}kg</span>{" "}
         のペース
       </p>
-      <p className="mt-1 text-xs text-neutral-500">
+      <p className="mt-1 text-xs text-muted">
         期限まであと {pace.daysLeft}日 ／ 目標まであと {formatKg(pace.remainingKg)}
       </p>
       {pace.perWeekKg > SAFE_PER_WEEK_KG && (
-        <p className="mt-2 text-xs text-orange-700 dark:text-orange-400">
+        <p className="mt-2 text-xs text-lemon-800 dark:text-lemon-200">
           無理のないペースは1週間に {SAFE_PER_WEEK_KG}kg までが目安です。期限を延ばすことも考えてみましょう。
         </p>
       )}

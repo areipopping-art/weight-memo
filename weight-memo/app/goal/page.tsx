@@ -35,19 +35,19 @@ export default function GoalPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">目標設定</h1>
-        <Link href="/goal/achievements" className="text-sm text-emerald-700 underline dark:text-emerald-400">
+        <h1 className="text-xl font-extrabold text-sakura-700 dark:text-sakura-300">🎯 目標設定</h1>
+        <Link href="/goal/achievements" className="rounded-full bg-lavender-100 px-3 py-1.5 text-sm font-bold text-lavender-800 hover:bg-lavender-200 dark:bg-[#2f2845] dark:text-lavender-200">
           🏆 達成記録
         </Link>
       </div>
 
       {hasGoal && (
-        <p className="rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800">
-          現在の目標：<span className="text-2xl font-bold">{formatKg(data.goalWeight!)}</span>
+        <p className="card bg-gradient-to-br from-sakura-50 to-white font-bold dark:from-[#3a2733] dark:to-[var(--card)]">
+          <span aria-hidden>🌸 </span>現在の目標：<span className="text-2xl font-extrabold text-sakura-600 dark:text-sakura-300">{formatKg(data.goalWeight!)}</span>
         </p>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-3 rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800">
+      <form onSubmit={handleSubmit} className="space-y-3 card">
         <label htmlFor="goal" className="block text-sm font-medium">
           目標体重（kg）
         </label>
@@ -61,16 +61,16 @@ export default function GoalPage() {
           placeholder="例：60.0"
           value={value}
           onChange={(e) => setInput(e.target.value)}
-          className="w-full rounded-md border border-neutral-300 px-3 py-2 text-lg dark:border-neutral-600 dark:bg-neutral-900"
+          className="input-soft w-full text-lg font-bold"
         />
         <button
           type="submit"
-          className="w-full rounded-md bg-emerald-600 py-2 font-bold text-white hover:bg-emerald-700"
+          className="w-full btn-primary py-2"
         >
           {hasGoal ? "変更する" : "保存する"}
         </button>
         {message && (
-          <p role="status" className={message.ok ? "text-sm text-emerald-700" : "text-sm text-red-600"}>
+          <p role="status" className={message.ok ? "text-sm font-bold text-mint-700 dark:text-mint-300" : "text-sm font-bold text-sakura-700 dark:text-sakura-300"}>
             {message.text}
           </p>
         )}

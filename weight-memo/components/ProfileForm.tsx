@@ -43,16 +43,16 @@ export default function ProfileForm({ profile, onSave }: { profile: Profile; onS
   }
 
   const choice = (selected: boolean) =>
-    `flex-1 cursor-pointer rounded-md border px-3 py-2 text-center text-sm ${
+    `flex-1 cursor-pointer rounded-full border-2 px-3 py-2 text-center text-sm transition-colors ${
       selected
-        ? "border-emerald-600 bg-emerald-50 font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
-        : "border-neutral-300 dark:border-neutral-600"
+        ? "border-sakura-400 bg-sakura-50 font-bold text-sakura-800 dark:bg-[#3a2733] dark:text-sakura-200"
+        : "border-[var(--input-border)]"
     }`;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3 rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800">
-      <h2 className="font-bold">カロリー計算に使う情報</h2>
-      <p className="text-xs text-neutral-500">目標ページの「1日の目安カロリー」の計算に使います。</p>
+    <form onSubmit={handleSubmit} className="space-y-3 card">
+      <h2 className="font-extrabold">🧮 カロリー計算に使う情報</h2>
+      <p className="text-xs text-muted">目標ページの「1日の目安カロリー」の計算に使います。</p>
 
       <div className="space-y-1">
         <label htmlFor="age" className="block text-sm font-medium">
@@ -68,7 +68,7 @@ export default function ProfileForm({ profile, onSave }: { profile: Profile; onS
           placeholder="例：35"
           value={ageValue}
           onChange={(e) => setAge(e.target.value)}
-          className="w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-600 dark:bg-neutral-900"
+          className="input-soft w-full"
         />
       </div>
 
@@ -105,17 +105,17 @@ export default function ProfileForm({ profile, onSave }: { profile: Profile; onS
                 className="sr-only"
               />
               {a.label}
-              <span className="ml-2 text-xs font-normal text-neutral-500">{a.hint}</span>
+              <span className="ml-2 text-xs font-normal text-muted">{a.hint}</span>
             </label>
           ))}
         </div>
       </fieldset>
 
-      <button type="submit" className="w-full rounded-md bg-emerald-600 py-2 font-bold text-white hover:bg-emerald-700">
+      <button type="submit" className="w-full btn-primary py-2">
         保存する
       </button>
       {message && (
-        <p role="status" className={message.ok ? "text-sm text-emerald-700" : "text-sm text-red-600"}>
+        <p role="status" className={message.ok ? "text-sm font-bold text-mint-700 dark:text-mint-300" : "text-sm font-bold text-sakura-700 dark:text-sakura-300"}>
           {message.text}
         </p>
       )}

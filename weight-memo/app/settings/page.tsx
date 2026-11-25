@@ -29,15 +29,15 @@ export default function SettingsPage() {
     setMessage({ ok: true, text: `身長を ${h.toFixed(1)}cm で保存しました` });
   }
 
-  const box = "space-y-3 rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800";
+  const box = "space-y-3 card";
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-bold">設定</h1>
+      <h1 className="text-xl font-extrabold text-sakura-700 dark:text-sakura-300">⚙️ 設定</h1>
 
       <form onSubmit={handleSubmit} className={box}>
         <label htmlFor="height" className="block text-sm font-medium">
-          身長（cm）
+          📏 身長（cm）
         </label>
         <input
           id="height"
@@ -49,17 +49,17 @@ export default function SettingsPage() {
           placeholder="例：160.0"
           value={value}
           onChange={(e) => setInput(e.target.value)}
-          className="w-full rounded-md border border-neutral-300 px-3 py-2 text-lg dark:border-neutral-600 dark:bg-neutral-900"
+          className="input-soft w-full text-lg font-bold"
         />
-        <p className="text-xs text-neutral-500">BMI の計算に使います。</p>
+        <p className="text-xs text-muted">BMI の計算に使います。</p>
         <button
           type="submit"
-          className="w-full rounded-md bg-emerald-600 py-2 font-bold text-white hover:bg-emerald-700"
+          className="w-full btn-primary py-2"
         >
           保存する
         </button>
         {message && (
-          <p role="status" className={message.ok ? "text-sm text-emerald-700" : "text-sm text-red-600"}>
+          <p role="status" className={message.ok ? "text-sm font-bold text-mint-700 dark:text-mint-300" : "text-sm font-bold text-sakura-700 dark:text-sakura-300"}>
             {message.text}
           </p>
         )}
@@ -68,23 +68,23 @@ export default function SettingsPage() {
       {data && <ProfileForm profile={data} onSave={setProfile} />}
 
       <section className={box}>
-        <h2 className="font-bold">CSV 書き出し</h2>
-        <p className="text-sm text-neutral-600 dark:text-neutral-300">
+        <h2 className="font-extrabold">📄 CSV 書き出し</h2>
+        <p className="text-sm text-muted">
           すべての記録を CSV ファイルでダウンロードします。Excel やスプレッドシートで開けます。
         </p>
         <button
           type="button"
           disabled={!data || data.records.length === 0}
           onClick={() => data && downloadCsv(recordsToCsv(data.records), `weight-memo-${todayString()}.csv`)}
-          className="w-full rounded-md border border-emerald-600 py-2 text-sm font-bold text-emerald-700 hover:bg-emerald-50 disabled:opacity-50 dark:text-emerald-400 dark:hover:bg-emerald-950"
+          className="w-full rounded-full border-2 border-mint-300 bg-mint-50 py-2 text-sm font-bold text-mint-800 hover:bg-mint-100 disabled:opacity-50 dark:border-mint-800 dark:bg-[#1f3330] dark:text-mint-200"
         >
           CSV をダウンロード{data ? `（${data.records.length}件）` : ""}
         </button>
       </section>
 
       <section className={box}>
-        <h2 className="font-bold">全データの削除</h2>
-        <p className="text-sm text-neutral-600 dark:text-neutral-300">
+        <h2 className="font-extrabold">🗑️ 全データの削除</h2>
+        <p className="text-sm text-muted">
           体重・食事の記録と写真、目標、身長・年齢などの設定をすべて削除します。元に戻せません。
         </p>
         {confirming ? (
@@ -92,7 +92,7 @@ export default function SettingsPage() {
             <button
               type="button"
               onClick={() => setConfirming(false)}
-              className="flex-1 rounded-md border border-neutral-300 py-2 text-sm dark:border-neutral-600"
+              className="btn-soft flex-1 py-2 text-sm"
             >
               やめる
             </button>
@@ -105,7 +105,7 @@ export default function SettingsPage() {
                 setMessage(null);
                 setDeleted(true);
               }}
-              className="flex-1 rounded-md bg-red-600 py-2 text-sm font-bold text-white hover:bg-red-700"
+              className="flex-1 rounded-full bg-sakura-600 py-2 text-sm font-bold text-white hover:bg-sakura-700"
             >
               本当にすべて削除
             </button>
@@ -117,13 +117,13 @@ export default function SettingsPage() {
               setConfirming(true);
               setDeleted(false);
             }}
-            className="w-full rounded-md border border-red-300 py-2 text-sm font-bold text-red-600 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950"
+            className="w-full rounded-full border-2 border-sakura-200 py-2 text-sm font-bold text-sakura-700 hover:bg-sakura-50 dark:border-sakura-900 dark:text-sakura-300 dark:hover:bg-[#3a2733]"
           >
             すべて削除する
           </button>
         )}
         {deleted && (
-          <p role="status" className="text-sm text-emerald-700">
+          <p role="status" className="text-sm font-bold text-mint-700 dark:text-mint-300">
             すべてのデータを削除しました
           </p>
         )}
